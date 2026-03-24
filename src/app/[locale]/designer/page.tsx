@@ -38,8 +38,8 @@ export default function DesignerPage() {
   const { currency, exchangeRate } = useCurrencyStore();
 
   // Calculator state
-  const [width, setWidth] = useState<number>(100);
-  const [height, setHeight] = useState<number>(100);
+  const [width, setWidth] = useState("100");
+  const [height, setHeight] = useState("100");
   const [complexity, setComplexity] = useState<DesignComplexity>("moderate");
 
   // AI Designer state
@@ -47,6 +47,8 @@ export default function DesignerPage() {
   const [prompt, setPrompt] = useState("");
   const [generatedDesign, setGeneratedDesign] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
+  const [generationStep, setGenerationStep] = useState("");
 
   // Design count from cookie
   const getDesignCount = () => {
@@ -55,7 +57,9 @@ export default function DesignerPage() {
   const designsRemaining = MAX_DESIGNS_PER_SESSION - getDesignCount();
 
   // Calculator logic
-  const areaM2 = (width * height) / 10000;
+  const w = Number(width) || 0;
+  const h = Number(height) || 0;
+  const areaM2 = (w * h) / 10000;
   const pricePerM2 = PRICE_PER_M2[complexity];
   const estimatedPrice = areaM2 * pricePerM2;
 
@@ -73,26 +77,73 @@ export default function DesignerPage() {
     []
   );
 
-  // AI Design generation
+  // AI Design generation with progress steps + real Gemini API
+  const [generationError, setGenerationError] = useState<string | null>(null);
+
   const handleGenerate = async () => {
     if (designsRemaining <= 0) return;
 
     setIsGenerating(true);
+    setGenerationProgress(0);
+    setGenerationError(null);
+
+    // Progress simulation runs alongside the real API call
+    const progressSteps = [
+      { progress: 15, label: t("ai.steps.analyzing"), delay: 500 },
+      { progress: 35, label: t("ai.steps.processing"), delay: 1500 },
+      { progress: 60, label: t("ai.steps.generating"), delay: 3000 },
+      { progress: 85, label: t("ai.steps.refining"), delay: 6000 },
+    ];
+
+    // Start progress animation
+    for (const step of progressSteps) {
+      setTimeout(() => {
+        setGenerationProgress(step.progress);
+        setGenerationStep(step.label);
+      }, step.delay);
+    }
+
     try {
-      // TODO: Call actual Gemini API via /api/design
-      // For now, simulate the design generation
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // Real API call to Gemini via /api/design
+      const response = await fetch("/api/design", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: prompt.trim(),
+          imageBase64: uploadedImage || undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error generating design");
+      }
+
+      // Finish progress
+      setGenerationProgress(100);
+      setGenerationStep(t("ai.steps.finishing"));
+      await new Promise((r) => setTimeout(r, 400));
+
+      if (data.imageUrl) {
+        setGeneratedDesign(data.imageUrl);
+      } else if (data.placeholder) {
+        // API key not configured — show message
+        setGenerationError(data.prompt);
+      } else {
+        setGeneratedDesign(null);
+        setGenerationError(data.prompt || "No se generó imagen. Intenta con otra descripción.");
+      }
 
       // Increment cookie count
       const current = getDesignCount();
       Cookies.set(DESIGN_COUNT_COOKIE, String(current + 1), { expires: 30 });
-
-      // Simulated result
-      setGeneratedDesign("/placeholder-design.png");
-    } catch {
-      // Error handling
+    } catch (err) {
+      setGenerationError(err instanceof Error ? err.message : "Error al generar el diseño");
     } finally {
       setIsGenerating(false);
+      setGenerationProgress(0);
+      setGenerationStep("");
     }
   };
 
@@ -142,7 +193,7 @@ export default function DesignerPage() {
                   min={10}
                   max={500}
                   value={width}
-                  onChange={(e) => setWidth(Number(e.target.value))}
+                  onChange={(e) => setWidth(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -153,7 +204,7 @@ export default function DesignerPage() {
                   min={10}
                   max={500}
                   value={height}
-                  onChange={(e) => setHeight(Number(e.target.value))}
+                  onChange={(e) => setHeight(e.target.value)}
                 />
               </div>
             </div>
@@ -268,41 +319,73 @@ export default function DesignerPage() {
             </div>
 
             {/* Generate Button */}
-            <Button
-              className="w-full"
-              size="lg"
-              onClick={handleGenerate}
-              disabled={
-                isGenerating ||
-                designsRemaining <= 0 ||
-                (!uploadedImage && !prompt)
-              }
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {t("ai.generating")}
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  {t("ai.generate")}
-                </>
-              )}
-            </Button>
+            {isGenerating ? (
+              <div className="rounded-xl border bg-card p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <Sparkles className="h-3.5 w-3.5 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">{t("ai.generating")}</p>
+                    <p className="text-xs text-muted-foreground">{generationStep}</p>
+                  </div>
+                </div>
+                {/* Progress bar */}
+                <div className="w-full bg-secondary rounded-full h-2.5 overflow-hidden">
+                  <div
+                    className="bg-primary h-full rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${generationProgress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  {generationProgress}% — {t("ai.steps.wait")}
+                </p>
+              </div>
+            ) : (
+              <Button
+                className="w-full"
+                size="lg"
+                onClick={handleGenerate}
+                disabled={designsRemaining <= 0 || !prompt.trim()}
+              >
+                <Sparkles className="mr-2 h-5 w-5" />
+                {t("ai.generate")}
+              </Button>
+            )}
+
+            {/* Error message */}
+            {generationError && !isGenerating && (
+              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+                {generationError}
+              </div>
+            )}
 
             {/* Generated Design */}
-            {generatedDesign && (
+            {generatedDesign && !isGenerating && (
               <>
                 <Separator />
                 <div className="space-y-4">
                   <h3 className="font-semibold">{t("ai.result")}</h3>
-                  <div className="aspect-square bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg flex items-center justify-center">
-                    <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
-                    {/* When connected to Gemini, display the actual generated image */}
+                  <div className="rounded-lg overflow-hidden border">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={generatedDesign}
+                      alt="Generated rug design"
+                      className="w-full h-auto"
+                    />
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        const a = document.createElement("a");
+                        a.href = generatedDesign!;
+                        a.download = "alfombrados-design.png";
+                        a.click();
+                      }}
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       {t("ai.downloadDesign")}
                     </Button>

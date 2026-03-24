@@ -163,6 +163,14 @@
       "prompt": "Describe tu idea de alfombra...",
       "generate": "Generar Diseño",
       "generating": "Creando tu diseño...",
+      "steps": {
+        "analyzing": "Analizando tu descripción e imagen...",
+        "processing": "Procesando referencias de diseño...",
+        "generating": "Generando diseño de alfombra con IA...",
+        "refining": "Refinando colores y texturas...",
+        "finishing": "Finalizando tu diseño...",
+        "wait": "Esto puede tomar unos segundos"
+      },
       "remaining": "{count} diseños restantes",
       "limitReached": "Has alcanzado el límite de diseños. ¡Contáctanos para más!",
       "result": "Tu Diseño de Alfombra",

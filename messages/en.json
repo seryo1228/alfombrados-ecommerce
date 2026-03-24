@@ -163,6 +163,14 @@
       "prompt": "Describe your rug idea...",
       "generate": "Generate Design",
       "generating": "Creating your design...",
+      "steps": {
+        "analyzing": "Analyzing your description and image...",
+        "processing": "Processing design references...",
+        "generating": "Generating rug design with AI...",
+        "refining": "Refining colors and textures...",
+        "finishing": "Finalizing your design...",
+        "wait": "This may take a few seconds"
+      },
       "remaining": "{count} designs remaining",
       "limitReached": "You've reached the design limit. Contact us for more designs!",
       "result": "Your Rug Design",
