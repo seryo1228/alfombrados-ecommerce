@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,67 +28,10 @@ import {
   useCurrencyStore,
   formatPrice,
 } from "@/components/layout/currency-switcher";
+import { Skeleton } from "@/components/ui/skeleton";
+import { publicApi } from "@/lib/api";
+import { toast } from "sonner";
 import type { Course } from "@/types";
-
-// Mock courses until API connected
-const MOCK_COURSES: Course[] = [
-  {
-    id: 1,
-    name: "Tufting Basics: Your First Rug",
-    description:
-      "Learn the fundamentals of tufting. From frame setup to finishing techniques. Perfect for beginners.",
-    priceUsd: 150,
-    durationHours: 8,
-    format: "in_person",
-    startDate: "2026-04-15",
-    endDate: "2026-04-15",
-    maxParticipants: 12,
-    enrollmentCount: 7,
-    imageUrl: null,
-  },
-  {
-    id: 2,
-    name: "Advanced Tufting: Complex Designs",
-    description:
-      "Master multi-color designs, gradient techniques, and precision cutting. For experienced tufters.",
-    priceUsd: 250,
-    durationHours: 12,
-    format: "in_person",
-    startDate: "2026-04-22",
-    endDate: "2026-04-23",
-    maxParticipants: 8,
-    enrollmentCount: 3,
-    imageUrl: null,
-  },
-  {
-    id: 3,
-    name: "Online: Introduction to Tufting",
-    description:
-      "A comprehensive online course covering all the basics. Includes video tutorials and live Q&A sessions.",
-    priceUsd: 89,
-    durationHours: 6,
-    format: "online",
-    startDate: "2026-05-01",
-    endDate: "2026-05-30",
-    maxParticipants: 50,
-    enrollmentCount: 18,
-    imageUrl: null,
-  },
-  {
-    id: 4,
-    name: "Business of Tufting: From Hobby to Income",
-    description:
-      "Learn how to price your rugs, find clients, and build a tufting business. Includes marketing strategies.",
-    priceUsd: 199,
-    durationHours: 10,
-    format: "online",
-    startDate: "2026-05-10",
-    endDate: "2026-06-10",
-    maxParticipants: 30,
-    enrollmentCount: 12,
-    imageUrl: null,
-  },
-];
 
 function CourseCard({ course }: { course: Course }) {
   const t = useTranslations("courses");
@@ -191,11 +134,25 @@ function EnrollForm({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Connect to API
-    console.log("Enrolling:", { courseId, name, email, phone });
-    onSuccess();
+    setSubmitting(true);
+    try {
+      await publicApi.enrollCourse(courseId, {
+        participantName: name,
+        phone,
+        email,
+        paymentMethod: "efectivo",
+      });
+      toast.success("Inscripción exitosa!");
+      onSuccess();
+    } catch {
+      toast.error("Error al inscribirse. Intenta de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -238,6 +195,16 @@ function EnrollForm({
 export default function CoursesPage() {
   const t = useTranslations("courses");
   const [view, setView] = useState<"list" | "calendar">("list");
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    publicApi
+      .getCourses()
+      .then((res) => setCourses(res.data))
+      .catch(() => toast.error("Error loading courses"))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -262,9 +229,23 @@ export default function CoursesPage() {
       </div>
 
       {/* Course Grid */}
-      {view === "list" ? (
+      {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MOCK_COURSES.map((course) => (
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="overflow-hidden">
+              <Skeleton className="aspect-video" />
+              <CardContent className="p-5 space-y-3">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-10 w-28" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : view === "list" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>
@@ -279,7 +260,7 @@ export default function CoursesPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {MOCK_COURSES.sort(
+              {courses.sort(
                 (a, b) =>
                   new Date(a.startDate || "").getTime() -
                   new Date(b.startDate || "").getTime()

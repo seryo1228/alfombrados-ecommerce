@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import {
@@ -28,7 +28,9 @@ import {
   useCurrencyStore,
   formatPrice,
 } from "@/components/layout/currency-switcher";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SHOP_CATEGORIES, CATEGORY_MAP } from "@/lib/constants";
+import { publicApi } from "@/lib/api";
 import type { Product } from "@/types";
 import { toast } from "sonner";
 
@@ -96,60 +98,6 @@ const MOCK_RUGS: RugDesign[] = [
   },
 ];
 
-/* ──────────────────────────────────────────────────────────────────
-   Materials & tools — existing product catalog
-   ────────────────────────────────────────────────────────────────── */
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: 1, name: "Acrylic Yarn - Premium White", category: "estambre",
-    baseUnit: "gramos", currentStock: 5000, minStock: 500,
-    salePriceUsd: 12.99, costingMethod: "fifo",
-    brandId: 1, brandName: "YarnPro", imageUrl: null,
-    description: "High-quality acrylic yarn, perfect for tufting. 500g spool.",
-    alertStatus: "ok",
-  },
-  {
-    id: 2, name: "Tufting Gun - Cut Pile", category: "pistola",
-    baseUnit: "unidades", currentStock: 15, minStock: 3,
-    salePriceUsd: 189.99, costingMethod: "fifo",
-    brandId: 2, brandName: "TuftMaster", imageUrl: null,
-    description: "Professional cut pile tufting gun. Adjustable speed and pile height.",
-    alertStatus: "ok",
-  },
-  {
-    id: 3, name: "Primary Tufting Cloth", category: "backing",
-    baseUnit: "m2", currentStock: 200, minStock: 20,
-    salePriceUsd: 8.5, costingMethod: "fifo",
-    brandId: null, brandName: null, imageUrl: null,
-    description: "High-quality primary tufting cloth. 1m width, sold per m2.",
-    alertStatus: "ok",
-  },
-  {
-    id: 4, name: "Tufting Scissors - Precision", category: "tijeras",
-    baseUnit: "unidades", currentStock: 45, minStock: 10,
-    salePriceUsd: 24.99, costingMethod: "fifo",
-    brandId: null, brandName: null, imageUrl: null,
-    description: "Precision scissors for carpet trimming and detailing.",
-    alertStatus: "ok",
-  },
-  {
-    id: 5, name: "Acrylic Yarn - Electric Blue", category: "estambre",
-    baseUnit: "gramos", currentStock: 3000, minStock: 500,
-    salePriceUsd: 12.99, costingMethod: "fifo",
-    brandId: 1, brandName: "YarnPro", imageUrl: null,
-    description: "Vibrant electric blue acrylic yarn. 500g spool.",
-    alertStatus: "ok",
-  },
-  {
-    id: 6, name: "Vinyl Glue - 1 Gallon", category: "pega_vinil",
-    baseUnit: "litros", currentStock: 30, minStock: 5,
-    salePriceUsd: 34.99, costingMethod: "fifo",
-    brandId: null, brandName: null, imageUrl: null,
-    description: "Industrial-grade vinyl glue for rug backing. 1 gallon.",
-    alertStatus: "ok",
-  },
-];
-
 /* ══════════════════════════════════════════════════════════════════ */
 
 export default function ProductsPage() {
@@ -161,29 +109,40 @@ export default function ProductsPage() {
   const addItem = useCartStore((s) => s.addItem);
   const { currency, exchangeRate } = useCurrencyStore();
 
+  // Fetch products from ERP API
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (activeTab !== "materials") return;
+    setLoading(true);
+    setError(null);
+    publicApi
+      .getProducts({
+        category: category !== "all" ? category : undefined,
+        search: search || undefined,
+      })
+      .then((res) => setProducts(res.data))
+      .catch(() => setError("Error loading products"))
+      .finally(() => setLoading(false));
+  }, [activeTab, category, search]);
+
   const filteredProducts = useMemo(() => {
-    let products = MOCK_PRODUCTS;
-    if (search) {
-      products = products.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    if (category !== "all") {
-      products = products.filter((p) => p.category === category);
-    }
+    let result = [...products];
     switch (sortBy) {
       case "priceLow":
-        products = [...products].sort((a, b) => (a.salePriceUsd || 0) - (b.salePriceUsd || 0));
+        result.sort((a, b) => (a.salePriceUsd || 0) - (b.salePriceUsd || 0));
         break;
       case "priceHigh":
-        products = [...products].sort((a, b) => (b.salePriceUsd || 0) - (a.salePriceUsd || 0));
+        result.sort((a, b) => (b.salePriceUsd || 0) - (a.salePriceUsd || 0));
         break;
       case "name":
-        products = [...products].sort((a, b) => a.name.localeCompare(b.name));
+        result.sort((a, b) => a.name.localeCompare(b.name));
         break;
     }
-    return products;
-  }, [search, category, sortBy]);
+    return result;
+  }, [products, sortBy]);
 
   const handleAddToCart = (product: Product) => {
     if (!product.salePriceUsd || product.currentStock <= 0) return;
@@ -380,7 +339,33 @@ export default function ProductsPage() {
           </div>
 
           {/* Product Grid */}
-          {filteredProducts.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                  <Skeleton className="aspect-square" />
+                  <CardContent className="p-4 space-y-3">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-5 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <div className="flex justify-between">
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                    <Skeleton className="h-9 w-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-16 text-muted-foreground">
+              <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-destructive mb-2">{error}</p>
+              <Button variant="outline" onClick={() => setCategory(category)}>
+                {t("retry") || "Retry"}
+              </Button>
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>{t("noResults")}</p>

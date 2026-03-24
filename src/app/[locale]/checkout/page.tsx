@@ -28,6 +28,7 @@ import {
   formatPrice,
 } from "@/components/layout/currency-switcher";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { publicApi } from "@/lib/api";
 import { toast } from "sonner";
 import type { ContactChannel } from "@/types";
 
@@ -41,6 +42,11 @@ export default function CheckoutPage() {
     "whatsapp"
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderConfirmed, setOrderConfirmed] = useState<{
+    orderId: number;
+    orderNumber: string;
+    totalUsd: number;
+  } | null>(null);
 
   // Form state
   const [form, setForm] = useState({
@@ -64,47 +70,71 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
+      // Submit order to ERP
+      const result = await publicApi.submitOrder({
+        customer: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          contactChannel: form.channel,
+        },
+        shipping: {
+          address: form.address,
+          city: form.city,
+          state: form.state,
+          zipCode: form.zipCode,
+          country: form.country,
+        },
+        items: items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+        paymentMethod,
+        currency,
+        notes: "",
+      });
+
+      setOrderConfirmed(result);
+      clearCart();
+      toast.success(`Orden #${result.orderNumber} creada!`);
+
+      // If WhatsApp, also open chat
       if (paymentMethod === "whatsapp") {
-        // Build WhatsApp message with order details
         const itemsList = items
-          .map(
-            (item) =>
-              `- ${item.name} x${item.quantity} = ${formatPrice(
-                item.priceUsd * item.quantity,
-                currency,
-                exchangeRate
-              )}`
-          )
+          .map((item) => `- ${item.name} x${item.quantity} = ${formatPrice(item.priceUsd * item.quantity, currency, exchangeRate)}`)
           .join("\n");
-
         const message = encodeURIComponent(
-          `New Order from ${form.name}\n\n` +
-            `Items:\n${itemsList}\n\n` +
-            `Total: ${formatPrice(totalPrice(), currency, exchangeRate)}\n\n` +
-            `Contact: ${form.phone}\n` +
-            `Email: ${form.email}\n` +
-            `Ship to: ${form.address}, ${form.city}, ${form.state} ${form.zipCode}, ${form.country}`
+          `Orden #${result.orderNumber}\n\n${itemsList}\n\nTotal: ${formatPrice(result.totalUsd, currency, exchangeRate)}\n\nContacto: ${form.phone}`
         );
-
-        window.open(
-          `https://wa.me/${WHATSAPP_NUMBER.replace("+", "")}?text=${message}`,
-          "_blank"
-        );
-
-        clearCart();
-        toast.success("Order sent via WhatsApp!");
-        router.push("/");
-      } else {
-        // TODO: Integrate with payment gateway (Stripe)
-        // For now, create order in ERP via API
-        toast.info("Online payment coming soon. Order sent via WhatsApp instead.");
+        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace("+", "")}?text=${message}`, "_blank");
       }
-    } catch {
-      toast.error("Something went wrong");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al procesar la orden";
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (orderConfirmed) {
+    return (
+      <div className="container mx-auto px-4 py-16 max-w-lg text-center">
+        <div className="rounded-full w-16 h-16 bg-green-500/10 flex items-center justify-center mx-auto mb-6">
+          <CreditCard className="h-8 w-8 text-green-500" />
+        </div>
+        <h1 className="text-2xl font-bold mb-2">{t("confirmed") || "Orden Confirmada!"}</h1>
+        <p className="text-muted-foreground mb-6">
+          {t("orderNumber") || "Número de orden"}: <span className="font-mono font-bold text-foreground">{orderConfirmed.orderNumber}</span>
+        </p>
+        <p className="text-muted-foreground mb-8">
+          Total: <span className="font-bold text-primary">{formatPrice(orderConfirmed.totalUsd, currency, exchangeRate)}</span>
+        </p>
+        <Button onClick={() => router.push("/products")} size="lg">
+          {t("continueShopping") || "Seguir Comprando"}
+        </Button>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     router.push("/cart");

@@ -1,16 +1,20 @@
 "use client";
 
+import { useEffect } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Button } from "@/components/ui/button";
 import { DollarSign } from "lucide-react";
+import { publicApi } from "@/lib/api";
 import type { Currency } from "@/types";
 
 interface CurrencyState {
   currency: Currency;
   exchangeRate: number;
+  rateLoaded: boolean;
   setCurrency: (c: Currency) => void;
   setExchangeRate: (rate: number) => void;
+  setRateLoaded: (v: boolean) => void;
 }
 
 export const useCurrencyStore = create<CurrencyState>()(
@@ -18,15 +22,34 @@ export const useCurrencyStore = create<CurrencyState>()(
     (set) => ({
       currency: "USD",
       exchangeRate: 1,
+      rateLoaded: false,
       setCurrency: (currency) => set({ currency }),
       setExchangeRate: (exchangeRate) => set({ exchangeRate }),
+      setRateLoaded: (rateLoaded) => set({ rateLoaded }),
     }),
     { name: "alf-currency" }
   )
 );
 
 export function CurrencySwitcher() {
-  const { currency, setCurrency } = useCurrencyStore();
+  const { currency, setCurrency, rateLoaded, setExchangeRate, setRateLoaded } =
+    useCurrencyStore();
+
+  // Fetch exchange rate from ERP on mount
+  useEffect(() => {
+    if (rateLoaded) return;
+    publicApi
+      .getExchangeRate()
+      .then((rate) => {
+        if (rate.rateVesPerUsd && rate.rateVesPerUsd > 0) {
+          setExchangeRate(Number(rate.rateVesPerUsd));
+          setRateLoaded(true);
+        }
+      })
+      .catch(() => {
+        // Silently fail — keep last known rate or default
+      });
+  }, [rateLoaded, setExchangeRate, setRateLoaded]);
 
   const toggle = () => setCurrency(currency === "USD" ? "VES" : "USD");
 
