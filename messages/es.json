@@ -1,0 +1,244 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "designer": "Diseñador",
+    "courses": "Cursos",
+    "cart": "Carrito",
+    "contact": "Contacto"
+  },
+  "home": {
+    "hero": {
+      "badge": "Proyecto Social",
+      "title": "Arte Tufting con Propósito Social",
+      "subtitle": "Creamos alfombras artesanales únicas mientras generamos oportunidades para nuestra comunidad. Cada alfombra cuenta una historia.",
+      "cta": "Diseña Tu Alfombra",
+      "ctaSecondary": "Ver Productos"
+    },
+    "stats": {
+      "rugsCreated": "Alfombras Creadas",
+      "happyClients": "Clientes Felices",
+      "workshopsGiven": "Talleres Realizados",
+      "yearsExperience": "Años de Experiencia"
+    },
+    "portfolio": {
+      "badge": "Nuestro Trabajo",
+      "title": "Proyectos que nos Enorgullecen",
+      "subtitle": "Cada pieza es única, hecha a mano con dedicación y materiales premium",
+      "viewProject": "Ver Proyecto",
+      "seeAll": "Ver Todos los Proyectos",
+      "items": {
+        "item1": { "title": "Alfombra Geométrica Sunset", "description": "Diseño moderno con tonos cálidos para sala de estar" },
+        "item2": { "title": "Tapete Floral Lavanda", "description": "Inspirado en jardines botánicos, estilo orgánico" },
+        "item3": { "title": "Alfombra Abstracta Bosque", "description": "Paleta natural con texturas mixtas cut & loop" },
+        "item4": { "title": "Tapete Minimalista Dorado", "description": "Líneas limpias con acentos metálicos" },
+        "item5": { "title": "Alfombra Oceánica XL", "description": "Pieza statement para espacios amplios" },
+        "item6": { "title": "Tapete Custom Logo", "description": "Diseño corporativo personalizado para oficina" }
+      }
+    },
+    "about": {
+      "badge": "Nuestra Historia",
+      "title": "Más que Alfombras, un Proyecto Social",
+      "description1": "Alfombrados nació como un proyecto social con una misión clara: combinar el arte del tufting con el impacto comunitario. Cada alfombra que creamos no solo decora un espacio, sino que genera oportunidades de aprendizaje y empleo para personas de nuestra comunidad.",
+      "description2": "Creemos que el arte manual tiene el poder de transformar vidas. Por eso enseñamos, creamos y compartimos esta pasión con todos los que quieran aprender. Desde nuestros talleres hasta cada pieza personalizada, buscamos dejar una huella positiva.",
+      "floatingCard": "Personas capacitadas en tufting",
+      "pillars": {
+        "impact": { "title": "Impacto Social", "description": "Generamos empleo y oportunidades en nuestra comunidad" },
+        "craft": { "title": "Artesanía Premium", "description": "Materiales de primera calidad en cada pieza" },
+        "community": { "title": "Comunidad", "description": "Red de artesanos que crecen juntos" },
+        "education": { "title": "Educación", "description": "Talleres accesibles para todos los niveles" }
+      }
+    },
+    "features": {
+      "title": "Lo que Ofrecemos",
+      "subtitle": "Desde diseños personalizados hasta cursos especializados, todo en un solo lugar",
+      "custom": {
+        "title": "Diseños Personalizados",
+        "description": "Sube tu idea y nuestra IA la transformará en un diseño de alfombra listo para producir"
+      },
+      "materials": {
+        "title": "Materiales Premium",
+        "description": "Estambres, herramientas y todo lo que necesitas para tufting, enviado directamente"
+      },
+      "courses": {
+        "title": "Aprende Tufting",
+        "description": "Únete a nuestros cursos presenciales y online para crear tus propias alfombras"
+      }
+    },
+    "reviews": {
+      "badge": "Testimonios",
+      "title": "Lo que Dicen Nuestros Clientes",
+      "subtitle": "La satisfacción de quienes confían en nosotros es nuestra mejor carta de presentación",
+      "items": {
+        "review1": {
+          "text": "Increíble la calidad de la alfombra que me hicieron. El diseño quedó exactamente como lo imaginé y el proceso fue súper fácil. Además, saber que apoyas un proyecto social hace que valga aún más.",
+          "name": "María González",
+          "role": "Cliente – Alfombra personalizada"
+        },
+        "review2": {
+          "text": "Tomé el curso de tufting básico y fue una experiencia transformadora. Los instructores son muy pacientes y el ambiente es genial. Ya estoy haciendo mis propias alfombras en casa.",
+          "name": "Carlos Mendoza",
+          "role": "Estudiante – Curso Tufting Básico"
+        },
+        "review3": {
+          "text": "Compro los materiales aquí desde hace meses. La calidad de los estambres es excelente y los precios son muy competitivos. El envío siempre llega a tiempo.",
+          "name": "Ana Rodríguez",
+          "role": "Cliente frecuente – Materiales"
+        }
+      }
+    },
+    "categories": {
+      "title": "Compra por Categoría",
+      "rugs": "Alfombras Personalizadas",
+      "yarn": "Estambres e Hilos",
+      "tools": "Herramientas de Tufting",
+      "courses": "Cursos y Talleres"
+    },
+    "cta": {
+      "title": "¿Listo para tu Alfombra Soñada?",
+      "subtitle": "Diseña tu alfombra personalizada o explora nuestro catálogo de materiales y herramientas premium",
+      "designBtn": "Diseñar Ahora",
+      "shopBtn": "Ver Tienda"
+    }
+  },
+  "products": {
+    "title": "Productos",
+    "subtitle": "Materiales y herramientas premium para tufting",
+    "tabs": {
+      "rugs": "Alfombras en Stock",
+      "materials": "Materiales y Herramientas"
+    },
+    "rugs": {
+      "title": "Diseños Listos para Entrega",
+      "subtitle": "Alfombras terminadas disponibles para envío inmediato",
+      "requestCustom": "Solicitar Diseño Personalizado",
+      "size": "Tamaño",
+      "readyToShip": "Listo para envío",
+      "oneOfAKind": "Pieza única"
+    },
+    "filters": {
+      "all": "Todos",
+      "yarn": "Estambres",
+      "tools": "Herramientas",
+      "backing": "Backing",
+      "accessories": "Accesorios"
+    },
+    "addToCart": "Agregar al Carrito",
+    "outOfStock": "Agotado",
+    "inStock": "Disponible",
+    "units": "unidades disponibles",
+    "price": "Precio",
+    "search": "Buscar productos...",
+    "noResults": "No se encontraron productos",
+    "sortBy": "Ordenar por",
+    "sortOptions": {
+      "newest": "Más recientes",
+      "priceLow": "Precio: Menor a Mayor",
+      "priceHigh": "Precio: Mayor a Menor",
+      "name": "Nombre A-Z"
+    }
+  },
+  "designer": {
+    "title": "Diseñador de Alfombras",
+    "subtitle": "Diseña tu alfombra personalizada con asistencia de IA",
+    "calculator": {
+      "title": "Calculador de Precio",
+      "width": "Ancho (cm)",
+      "height": "Alto (cm)",
+      "design": "Complejidad del Diseño",
+      "simple": "Simple",
+      "moderate": "Moderado",
+      "complex": "Complejo",
+      "premium": "Premium",
+      "estimate": "Precio Estimado",
+      "area": "Área",
+      "requestQuote": "Solicitar Cotización",
+      "priceNote": "El precio final puede variar según los detalles del diseño"
+    },
+    "ai": {
+      "title": "Estudio de Diseño IA",
+      "description": "Sube una foto o describe tu idea y nuestra IA creará un diseño de alfombra para ti",
+      "upload": "Subir una imagen",
+      "uploadHint": "Arrastra y suelta o haz clic para subir (JPG, PNG)",
+      "prompt": "Describe tu idea de alfombra...",
+      "generate": "Generar Diseño",
+      "generating": "Creando tu diseño...",
+      "remaining": "{count} diseños restantes",
+      "limitReached": "Has alcanzado el límite de diseños. ¡Contáctanos para más!",
+      "result": "Tu Diseño de Alfombra",
+      "downloadDesign": "Descargar Diseño",
+      "requestQuote": "Cotizar Este Diseño"
+    }
+  },
+  "courses": {
+    "title": "Cursos y Talleres",
+    "subtitle": "Aprende el arte del tufting con expertos",
+    "upcoming": "Próximos",
+    "online": "Online",
+    "inPerson": "Presencial",
+    "duration": "{hours}h de duración",
+    "price": "desde",
+    "enroll": "Inscribirme",
+    "spots": "{count} cupos disponibles",
+    "full": "Curso Lleno",
+    "calendar": "Vista Calendario",
+    "list": "Vista Lista"
+  },
+  "cart": {
+    "title": "Carrito de Compras",
+    "empty": "Tu carrito está vacío",
+    "emptyHint": "Explora nuestros productos y agrega artículos a tu carrito",
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "shippingCalc": "Calculado en el checkout",
+    "total": "Total",
+    "checkout": "Proceder al Pago",
+    "continueShopping": "Seguir Comprando",
+    "remove": "Eliminar",
+    "quantity": "Cant"
+  },
+  "checkout": {
+    "title": "Finalizar Compra",
+    "contact": {
+      "title": "Información de Contacto",
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "channel": "¿Cómo nos encontraste?"
+    },
+    "shipping": {
+      "title": "Dirección de Envío",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "state": "Estado",
+      "zip": "Código Postal",
+      "country": "País"
+    },
+    "payment": {
+      "title": "Método de Pago",
+      "online": "Pagar en Línea",
+      "whatsapp": "Completar por WhatsApp",
+      "whatsappHint": "Te enviaremos un link de pago por WhatsApp",
+      "onlineHint": "Pago seguro con tarjeta o transferencia"
+    },
+    "place": "Realizar Pedido",
+    "whatsappOrder": "Enviar Pedido por WhatsApp"
+  },
+  "footer": {
+    "about": "Alfombras tufting artesanales hechas con pasión. Diseños personalizados, materiales premium y cursos especializados.",
+    "links": "Enlaces Rápidos",
+    "contact": "Contáctanos",
+    "social": "Síguenos",
+    "rights": "Todos los derechos reservados",
+    "currency": "Moneda"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "retry": "Intentar de Nuevo",
+    "viewAll": "Ver Todo",
+    "learnMore": "Saber Más",
+    "contactUs": "Contáctanos",
+    "whatsapp": "WhatsApp"
+  }
+}

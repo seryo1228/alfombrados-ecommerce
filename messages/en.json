@@ -1,0 +1,244 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "designer": "Rug Designer",
+    "courses": "Courses",
+    "cart": "Cart",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero": {
+      "badge": "Social Project",
+      "title": "Tufting Art with Social Purpose",
+      "subtitle": "We create unique handcrafted rugs while generating opportunities for our community. Every rug tells a story.",
+      "cta": "Design Your Rug",
+      "ctaSecondary": "Browse Products"
+    },
+    "stats": {
+      "rugsCreated": "Rugs Created",
+      "happyClients": "Happy Clients",
+      "workshopsGiven": "Workshops Given",
+      "yearsExperience": "Years of Experience"
+    },
+    "portfolio": {
+      "badge": "Our Work",
+      "title": "Projects We're Proud Of",
+      "subtitle": "Each piece is unique, handmade with dedication and premium materials",
+      "viewProject": "View Project",
+      "seeAll": "See All Projects",
+      "items": {
+        "item1": { "title": "Sunset Geometric Rug", "description": "Modern design with warm tones for living room" },
+        "item2": { "title": "Lavender Floral Rug", "description": "Inspired by botanical gardens, organic style" },
+        "item3": { "title": "Forest Abstract Rug", "description": "Natural palette with mixed cut & loop textures" },
+        "item4": { "title": "Golden Minimalist Rug", "description": "Clean lines with metallic accents" },
+        "item5": { "title": "Oceanic XL Rug", "description": "Statement piece for large spaces" },
+        "item6": { "title": "Custom Logo Rug", "description": "Personalized corporate design for office" }
+      }
+    },
+    "about": {
+      "badge": "Our Story",
+      "title": "More than Rugs, a Social Project",
+      "description1": "Alfombrados was born as a social project with a clear mission: to combine the art of tufting with community impact. Every rug we create not only decorates a space, but generates learning and employment opportunities for people in our community.",
+      "description2": "We believe that manual art has the power to transform lives. That's why we teach, create, and share this passion with everyone who wants to learn. From our workshops to every custom piece, we seek to leave a positive footprint.",
+      "floatingCard": "People trained in tufting",
+      "pillars": {
+        "impact": { "title": "Social Impact", "description": "We create jobs and opportunities in our community" },
+        "craft": { "title": "Premium Craft", "description": "Top-quality materials in every piece" },
+        "community": { "title": "Community", "description": "A network of artisans growing together" },
+        "education": { "title": "Education", "description": "Accessible workshops for all skill levels" }
+      }
+    },
+    "features": {
+      "title": "What We Offer",
+      "subtitle": "From custom designs to specialized courses, everything in one place",
+      "custom": {
+        "title": "Custom Designs",
+        "description": "Upload your idea and our AI will transform it into a rug design ready to produce"
+      },
+      "materials": {
+        "title": "Premium Materials",
+        "description": "Yarn, tools, and everything you need for tufting, shipped directly to you"
+      },
+      "courses": {
+        "title": "Learn Tufting",
+        "description": "Join our in-person and online courses to create your own rugs"
+      }
+    },
+    "reviews": {
+      "badge": "Testimonials",
+      "title": "What Our Clients Say",
+      "subtitle": "The satisfaction of those who trust us is our best introduction",
+      "items": {
+        "review1": {
+          "text": "The quality of the rug they made for me is incredible. The design turned out exactly as I imagined and the process was super easy. Plus, knowing you're supporting a social project makes it even more worthwhile.",
+          "name": "María González",
+          "role": "Client – Custom rug"
+        },
+        "review2": {
+          "text": "I took the basic tufting course and it was a transformative experience. The instructors are very patient and the atmosphere is great. I'm already making my own rugs at home.",
+          "name": "Carlos Mendoza",
+          "role": "Student – Basic Tufting Course"
+        },
+        "review3": {
+          "text": "I've been buying materials here for months. The yarn quality is excellent and the prices are very competitive. Shipping always arrives on time.",
+          "name": "Ana Rodríguez",
+          "role": "Frequent client – Materials"
+        }
+      }
+    },
+    "categories": {
+      "title": "Shop by Category",
+      "rugs": "Custom Rugs",
+      "yarn": "Yarn & Thread",
+      "tools": "Tufting Tools",
+      "courses": "Courses & Workshops"
+    },
+    "cta": {
+      "title": "Ready for Your Dream Rug?",
+      "subtitle": "Design your custom rug or explore our catalog of premium materials and tools",
+      "designBtn": "Design Now",
+      "shopBtn": "Visit Shop"
+    }
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Premium tufting materials and tools",
+    "tabs": {
+      "rugs": "Rugs in Stock",
+      "materials": "Materials & Tools"
+    },
+    "rugs": {
+      "title": "Ready-to-Ship Designs",
+      "subtitle": "Finished rugs available for immediate delivery",
+      "requestCustom": "Request Custom Design",
+      "size": "Size",
+      "readyToShip": "Ready to ship",
+      "oneOfAKind": "One of a kind"
+    },
+    "filters": {
+      "all": "All",
+      "yarn": "Yarn",
+      "tools": "Tools",
+      "backing": "Backing",
+      "accessories": "Accessories"
+    },
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "units": "units available",
+    "price": "Price",
+    "search": "Search products...",
+    "noResults": "No products found",
+    "sortBy": "Sort by",
+    "sortOptions": {
+      "newest": "Newest",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low",
+      "name": "Name A-Z"
+    }
+  },
+  "designer": {
+    "title": "Rug Designer",
+    "subtitle": "Design your custom rug with AI assistance",
+    "calculator": {
+      "title": "Price Calculator",
+      "width": "Width (cm)",
+      "height": "Height (cm)",
+      "design": "Design Complexity",
+      "simple": "Simple",
+      "moderate": "Moderate",
+      "complex": "Complex",
+      "premium": "Premium",
+      "estimate": "Estimated Price",
+      "area": "Area",
+      "requestQuote": "Request Quote",
+      "priceNote": "Final price may vary based on design details"
+    },
+    "ai": {
+      "title": "AI Design Studio",
+      "description": "Upload a photo or describe your idea and our AI will create a rug design for you",
+      "upload": "Upload an image",
+      "uploadHint": "Drag & drop or click to upload (JPG, PNG)",
+      "prompt": "Describe your rug idea...",
+      "generate": "Generate Design",
+      "generating": "Creating your design...",
+      "remaining": "{count} designs remaining",
+      "limitReached": "You've reached the design limit. Contact us for more designs!",
+      "result": "Your Rug Design",
+      "downloadDesign": "Download Design",
+      "requestQuote": "Request Quote for This Design"
+    }
+  },
+  "courses": {
+    "title": "Courses & Workshops",
+    "subtitle": "Learn the art of tufting from experts",
+    "upcoming": "Upcoming",
+    "online": "Online",
+    "inPerson": "In Person",
+    "duration": "{hours}h duration",
+    "price": "from",
+    "enroll": "Enroll Now",
+    "spots": "{count} spots available",
+    "full": "Course Full",
+    "calendar": "Calendar View",
+    "list": "List View"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "emptyHint": "Browse our products and add items to your cart",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shippingCalc": "Calculated at checkout",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping",
+    "remove": "Remove",
+    "quantity": "Qty"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "contact": {
+      "title": "Contact Information",
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "channel": "How did you find us?"
+    },
+    "shipping": {
+      "title": "Shipping Address",
+      "address": "Address",
+      "city": "City",
+      "state": "State",
+      "zip": "ZIP Code",
+      "country": "Country"
+    },
+    "payment": {
+      "title": "Payment Method",
+      "online": "Pay Online",
+      "whatsapp": "Complete via WhatsApp",
+      "whatsappHint": "We'll send you a payment link via WhatsApp",
+      "onlineHint": "Secure payment with card or transfer"
+    },
+    "place": "Place Order",
+    "whatsappOrder": "Send Order via WhatsApp"
+  },
+  "footer": {
+    "about": "Handcrafted tufted rugs made with passion. Custom designs, premium materials, and expert courses.",
+    "links": "Quick Links",
+    "contact": "Contact Us",
+    "social": "Follow Us",
+    "rights": "All rights reserved",
+    "currency": "Currency"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "contactUs": "Contact Us",
+    "whatsapp": "WhatsApp"
+  }
+}
