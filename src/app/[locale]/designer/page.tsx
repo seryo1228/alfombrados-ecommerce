@@ -40,7 +40,7 @@ export default function DesignerPage() {
   // Calculator state
   const [width, setWidth] = useState("100");
   const [height, setHeight] = useState("100");
-  const [complexity, setComplexity] = useState<DesignComplexity>("moderate");
+  const [complexity, setComplexity] = useState<DesignComplexity>("2colors");
 
   // AI Designer state
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -220,10 +220,10 @@ export default function DesignerPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="simple">{t("calculator.simple")} — ${PRICE_PER_M2.simple}/m²</SelectItem>
-                  <SelectItem value="moderate">{t("calculator.moderate")} — ${PRICE_PER_M2.moderate}/m²</SelectItem>
-                  <SelectItem value="complex">{t("calculator.complex")} — ${PRICE_PER_M2.complex}/m²</SelectItem>
-                  <SelectItem value="premium">{t("calculator.premium")} — ${PRICE_PER_M2.premium}/m²</SelectItem>
+                  <SelectItem value="2colors">2 {t("calculator.colors")} — ${PRICE_PER_M2["2colors"]}/m²</SelectItem>
+                  <SelectItem value="3colors">3 {t("calculator.colors")} — ${PRICE_PER_M2["3colors"]}/m²</SelectItem>
+                  <SelectItem value="4colors">4 {t("calculator.colors")} — ${PRICE_PER_M2["4colors"]}/m²</SelectItem>
+                  <SelectItem value="5colors">5 {t("calculator.colors")} — ${PRICE_PER_M2["5colors"]}/m²</SelectItem>
                 </SelectContent>
               </Select>
             </div>

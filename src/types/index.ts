@@ -27,7 +27,7 @@ export type ContactChannel =
   | "website"
   | "otro";
 
-export type DesignComplexity = "simple" | "moderate" | "complex" | "premium";
+export type DesignComplexity = "2colors" | "3colors" | "4colors" | "5colors";
 
 export type CourseFormat = "online" | "in_person" | "hybrid";
 
