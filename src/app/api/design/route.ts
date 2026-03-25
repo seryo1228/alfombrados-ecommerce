@@ -13,7 +13,7 @@ CRITICAL STYLE REQUIREMENTS — Every design MUST follow these rules:
    - NO fine gradients, NO photorealistic shading, NO blending between colors
    - Each color zone must be large enough to tuft (minimum ~2cm areas at real scale)
    - Strong black or dark outlines separating color regions (like a coloring book)
-3. LIMITED PALETTE: Use a maximum of 2-5 distinct, solid colors per design. Each color should be a single flat tone.
+3. SOLID COLORS: Each color in the design should be a single flat tone — no gradients within a color zone.
 4. TOP-DOWN VIEW: Always show the rug as seen from directly above, flat on a clean white background.
 5. CLEAN BORDER: Include a well-defined rectangular or organic rug border/edge.
 6. BOLD & SIMPLE: Favor bold shapes, geometric patterns, abstract art, cartoon-style illustrations, or stylized nature motifs. Avoid tiny details that cannot be tufted.
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         },
       });
       parts.push({
-        text: "Transform this image into an ILLUSTRATED tufting pattern. Simplify it dramatically: reduce to flat solid color zones with bold outlines, remove all gradients and fine details, keep only essential shapes. The result must look like a bold graphic illustration that an artisan can easily reproduce with a tufting gun. Maximum 5 colors.",
+        text: "Transform this image into an ILLUSTRATED tufting pattern. Simplify it dramatically: reduce to flat solid color zones with bold outlines, remove all gradients and fine details, keep only essential shapes. The result must look like a bold graphic illustration that an artisan can easily reproduce with a tufting gun.",
       });
     }
 
