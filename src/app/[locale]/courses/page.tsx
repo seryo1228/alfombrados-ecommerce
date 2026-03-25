@@ -69,15 +69,21 @@ function CourseCard({ course }: { course: Course }) {
           {course.description}
         </p>
 
-        {/* Date */}
-        {course.startDate && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+        {/* Date & Location */}
+        {course.courseDate && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <Calendar className="h-4 w-4" />
-            {new Date(course.startDate).toLocaleDateString("en-US", {
+            {new Date(course.courseDate + "T12:00:00").toLocaleDateString("es-VE", {
               month: "long",
               day: "numeric",
               year: "numeric",
             })}
+          </div>
+        )}
+        {course.location && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+            <MapPin className="h-4 w-4" />
+            {course.location}
           </div>
         )}
 
@@ -127,7 +133,7 @@ function EnrollForm({
   courseId,
   onSuccess,
 }: {
-  courseId: number;
+  courseId: string;
   onSuccess: () => void;
 }) {
   const [name, setName] = useState("");

@@ -64,7 +64,7 @@ export const publicApi = {
 
   // Course enrollment
   enrollCourse: async (
-    courseId: number,
+    courseId: string | number,
     enrollment: {
       participantName: string;
       phone: string;

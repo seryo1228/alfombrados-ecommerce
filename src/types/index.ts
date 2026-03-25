@@ -50,14 +50,14 @@ export interface Product {
 
 // Course from ERP
 export interface Course {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
   priceUsd: number;
-  durationHours: number;
+  durationHours: number | null;
   format: CourseFormat;
-  startDate: string | null;
-  endDate: string | null;
+  courseDate: string | null;
+  location: string | null;
   maxParticipants: number | null;
   enrollmentCount: number;
   imageUrl: string | null;
