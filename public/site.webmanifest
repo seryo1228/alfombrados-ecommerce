@@ -1,0 +1,16 @@
+{
+  "name": "Alfombra2 - Alfombras Tufting Artesanales",
+  "short_name": "Alfombra2",
+  "description": "Alfombras tufting artesanales con propósito social",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1729",
+  "theme_color": "#369cdb",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
