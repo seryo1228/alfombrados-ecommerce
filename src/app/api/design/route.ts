@@ -3,18 +3,25 @@ import { NextRequest, NextResponse } from "next/server";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent";
 
-// System prompt for rug design generation
-const RUG_DESIGN_PROMPT = `You are an expert tufted rug designer. Generate a high-quality rug design based on the user's input.
-The design should:
-- Be suitable for tufting (clear lines, distinct color areas)
-- Have a top-down view as if looking at the rug from above
-- Include a clean border/edge
-- Use vibrant but harmonious colors
-- Be practical to manufacture with a tufting gun
-- Show the design on a flat surface with clean background
+// System prompt for rug design generation — optimized for tufting artisans
+const RUG_DESIGN_PROMPT = `You are an expert hand-tufted rug designer specializing in artisan tufting production.
 
-If the user provides an image, transform it into a tufted rug design maintaining the essence of the original but adapted for tufting.
-If the user provides text, create a rug design based on their description.`;
+CRITICAL STYLE REQUIREMENTS — Every design MUST follow these rules:
+1. ILLUSTRATED STYLE: Generate a flat, illustrated design — NOT photorealistic. Think bold graphic illustration, like a vector art poster or screen-print.
+2. TUFTING-FRIENDLY: The design must be easily reproducible by hand with a tufting gun on a tufting frame. This means:
+   - CLEAR, WELL-DEFINED AREAS of solid color separated by distinct outlines/boundaries
+   - NO fine gradients, NO photorealistic shading, NO blending between colors
+   - Each color zone must be large enough to tuft (minimum ~2cm areas at real scale)
+   - Strong black or dark outlines separating color regions (like a coloring book)
+3. LIMITED PALETTE: Use a maximum of 2-5 distinct, solid colors per design. Each color should be a single flat tone.
+4. TOP-DOWN VIEW: Always show the rug as seen from directly above, flat on a clean white background.
+5. CLEAN BORDER: Include a well-defined rectangular or organic rug border/edge.
+6. BOLD & SIMPLE: Favor bold shapes, geometric patterns, abstract art, cartoon-style illustrations, or stylized nature motifs. Avoid tiny details that cannot be tufted.
+
+Think of the output as a "tufting pattern template" that an artisan can directly project onto their frame and follow with a tufting gun.
+
+If the user provides an image: Transform it into an illustrated tufting-friendly design. Simplify the image dramatically — reduce to flat color zones with clear boundaries, remove all gradients and fine details, keep only the essential shapes.
+If the user provides text: Create an original illustrated rug design based on their description, following all the rules above.`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -56,7 +63,7 @@ export async function POST(request: NextRequest) {
         },
       });
       parts.push({
-        text: "Transform this image into a tufted rug design. Keep the main elements but adapt them for tufting manufacturing.",
+        text: "Transform this image into an ILLUSTRATED tufting pattern. Simplify it dramatically: reduce to flat solid color zones with bold outlines, remove all gradients and fine details, keep only essential shapes. The result must look like a bold graphic illustration that an artisan can easily reproduce with a tufting gun. Maximum 5 colors.",
       });
     }
 
