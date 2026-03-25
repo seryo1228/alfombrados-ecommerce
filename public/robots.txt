@@ -1,0 +1,5 @@
+# Alfombra2 - www.alfombra2.com
+User-agent: *
+Allow: /
+
+Sitemap: https://www.alfombra2.com/sitemap.xml
