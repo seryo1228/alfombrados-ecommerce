@@ -2,14 +2,15 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, Manrope } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "sonner";
 import { GoogleAnalytics } from "@/components/analytics";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-headline" });
 
 export default async function LocaleLayout({
   children,
@@ -27,7 +28,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={cn("font-sans", inter.variable)}>
+    <html lang={locale} className={cn("font-sans", jakarta.variable, manrope.variable)}>
       <body className="antialiased min-h-screen flex flex-col">
         <GoogleAnalytics />
         <NextIntlClientProvider messages={messages}>

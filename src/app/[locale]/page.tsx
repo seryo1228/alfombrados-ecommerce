@@ -25,11 +25,19 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
+
+const YarnScene = dynamic(() => import("@/components/three/YarnScene"), {
+  ssr: false,
+  loading: () => null,
+});
 
 /* ------------------------------------------------------------------ */
-/*  Yarn Ball Animation – realistic falling & bouncing yarn balls      */
+/*  Old canvas animation removed — now using Three.js YarnScene        */
 /* ------------------------------------------------------------------ */
-const YARN_COLORS = [
+
+/* PLACEHOLDER — search for YARN_COLORS_START to find removal end */
+const _YARN_COLORS_REMOVED = [
   // Real yarn / estambre colors
   { base: "#e74c3c", light: "#f1948a", dark: "#c0392b", shadow: "#922b21" }, // Rojo
   { base: "#e67e22", light: "#f0b27a", dark: "#d35400", shadow: "#a04000" }, // Naranja
@@ -264,15 +272,14 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* ═══════════════════════════ HERO ═══════════════════════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-background to-accent/15">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.04]" />
-        {/* decorative blobs – brighter for dark bg */}
-        <div className="absolute -top-24 -right-24 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[100px]" />
-        <div className="absolute -bottom-24 -left-24 w-[500px] h-[500px] bg-accent/15 rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/5 rounded-full blur-[120px]" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 min-h-[600px]">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]" />
+        {/* decorative blobs */}
+        <div className="absolute -top-24 -right-24 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[100px]" />
+        <div className="absolute -bottom-24 -left-24 w-[500px] h-[500px] bg-accent/8 rounded-full blur-[100px]" />
 
-        {/* Falling yarn balls */}
-        <YarnBallsAnimation />
+        {/* Interactive 3D yarn balls */}
+        <YarnScene />
 
         <div className="container mx-auto px-4 py-24 md:py-36 relative z-10">
           <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
