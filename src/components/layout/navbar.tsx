@@ -13,6 +13,7 @@ import { CurrencySwitcher } from "./currency-switcher";
 
 const navLinks = [
   { href: "/products", key: "products" },
+  { href: "/gallery", key: "gallery" },
   { href: "/designer", key: "designer" },
   { href: "/courses", key: "courses" },
 ] as const;

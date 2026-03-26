@@ -450,7 +450,7 @@ export default function HomePage() {
 
           <div className="text-center mt-10">
             <Button variant="outline" asChild className="group">
-              <Link href="/designer">
+              <Link href="/gallery">
                 {t("portfolio.seeAll")}
                 <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>

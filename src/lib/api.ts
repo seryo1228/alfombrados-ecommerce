@@ -24,6 +24,25 @@ export const publicApi = {
     return data;
   },
 
+  // Portfolio gallery
+  getPortfolio: async (category?: string) => {
+    const params = category && category !== "all" ? { category } : {};
+    const { data } = await api.get<{
+      data: Array<{
+        id: string;
+        title: string;
+        description: string | null;
+        category: string;
+        imageUrl: string;
+        widthCm: string | null;
+        heightCm: string | null;
+        featured: boolean;
+      }>;
+      categories: string[];
+    }>("/public/portfolio", { params });
+    return data;
+  },
+
   // Rugs in stock (alfombras terminadas)
   getRugs: async () => {
     const { data } = await api.get<{
