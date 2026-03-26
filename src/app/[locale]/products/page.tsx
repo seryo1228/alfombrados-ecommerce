@@ -118,7 +118,10 @@ export default function ProductsPage() {
   // Sidebar filter checkboxes
   const [showRugs, setShowRugs] = useState(true);
   const [showMaterials, setShowMaterials] = useState(true);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+
+  // Real rugs from ERP
+  const [realRugs, setRealRugs] = useState<RugDesign[]>([]);
+  const [rugsLoading, setRugsLoading] = useState(true);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,6 +130,32 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Fetch real rugs from ERP
+  useEffect(() => {
+    setRugsLoading(true);
+    publicApi
+      .getRugs()
+      .then((res) => {
+        const mapped: RugDesign[] = res.data.map((r, i) => ({
+          id: 2000 + i,
+          erpId: r.id,
+          name: r.name,
+          nameEs: r.name,
+          description: r.description || "",
+          descriptionEs: r.description || "",
+          size: `${Math.round(Number(r.widthCm))}×${Math.round(Number(r.heightCm))} cm`,
+          priceUsd: Number(r.salePriceUsd),
+          image: r.imageUrl,
+          gradient: ["from-rose-400 via-pink-300 to-rose-200", "from-sky-400 via-blue-300 to-cyan-200", "from-emerald-400 via-green-300 to-teal-200", "from-amber-400 via-orange-300 to-yellow-200", "from-violet-400 via-purple-300 to-indigo-300"][i % 5],
+          stock: 1,
+          featured: i < 2,
+        }));
+        setRealRugs(mapped);
+      })
+      .catch(() => { /* Fall back to MOCK_RUGS */ })
+      .finally(() => setRugsLoading(false));
+  }, []);
 
   useEffect(() => {
     if (!showMaterials) return;
@@ -145,15 +174,10 @@ export default function ProductsPage() {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, category, sortBy, showRugs, showMaterials, priceRange]);
+  }, [search, category, sortBy, showRugs, showMaterials]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
-    result = result.filter(
-      (p) =>
-        (p.salePriceUsd || 0) >= priceRange[0] &&
-        (p.salePriceUsd || 0) <= priceRange[1]
-    );
     switch (sortBy) {
       case "priceLow":
         result.sort((a, b) => (a.salePriceUsd || 0) - (b.salePriceUsd || 0));
@@ -166,10 +190,13 @@ export default function ProductsPage() {
         break;
     }
     return result;
-  }, [products, sortBy, priceRange]);
+  }, [products, sortBy]);
+
+  // Use real rugs from ERP, fall back to mock if empty
+  const rugsSource = realRugs.length > 0 ? realRugs : MOCK_RUGS;
 
   const filteredRugs = useMemo(() => {
-    let result = [...MOCK_RUGS];
+    let result = [...rugsSource];
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(
@@ -178,11 +205,8 @@ export default function ProductsPage() {
           r.nameEs.toLowerCase().includes(q)
       );
     }
-    result = result.filter(
-      (r) => r.priceUsd >= priceRange[0] && r.priceUsd <= priceRange[1]
-    );
     return result;
-  }, [search, priceRange]);
+  }, [search, rugsSource]);
 
   // Combine all items for unified pagination
   type UnifiedItem =
@@ -330,31 +354,6 @@ export default function ProductsPage() {
                     </Select>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Price range */}
-            <Card className="bg-card">
-              <CardContent className="p-4 space-y-4">
-                <h3 className="font-headline font-semibold text-sm text-foreground uppercase tracking-wide">
-                  {isEs ? "Rango de Precio" : "Price Range"}
-                </h3>
-                <div className="space-y-3">
-                  <input
-                    type="range"
-                    min={0}
-                    max={500}
-                    value={priceRange[1]}
-                    onChange={(e) =>
-                      setPriceRange([priceRange[0], Number(e.target.value)])
-                    }
-                    className="w-full accent-primary"
-                  />
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{formatPrice(priceRange[0], currency, exchangeRate)}</span>
-                    <span>{formatPrice(priceRange[1], currency, exchangeRate)}</span>
-                  </div>
-                </div>
               </CardContent>
             </Card>
 

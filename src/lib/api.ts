@@ -24,6 +24,25 @@ export const publicApi = {
     return data;
   },
 
+  // Rugs in stock (alfombras terminadas)
+  getRugs: async () => {
+    const { data } = await api.get<{
+      data: Array<{
+        id: string;
+        name: string;
+        description: string | null;
+        widthCm: string;
+        heightCm: string;
+        salePriceUsd: string;
+        imageUrl: string | null;
+        season: string | null;
+        style: string | null;
+        colors: number | null;
+      }>;
+    }>("/public/rugs");
+    return data;
+  },
+
   // Products
   getProducts: async (params?: {
     category?: string;
