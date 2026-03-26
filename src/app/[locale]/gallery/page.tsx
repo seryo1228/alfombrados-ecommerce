@@ -20,6 +20,8 @@ interface PortfolioItem {
   widthCm: string | null;
   heightCm: string | null;
   featured: boolean;
+  status?: string;
+  salePriceUsd?: string | null;
 }
 
 const CATEGORY_LABELS: Record<string, { es: string; en: string }> = {
@@ -50,7 +52,7 @@ export default function GalleryPage() {
   useEffect(() => {
     setLoading(true);
     publicApi
-      .getPortfolio(activeCategory !== "all" ? activeCategory : undefined)
+      .getGallery(activeCategory !== "all" ? activeCategory : undefined)
       .then((res) => {
         setItems(res.data);
         if (res.categories.length > 0) setCategories(res.categories);
@@ -210,6 +212,24 @@ export default function GalleryPage() {
                         {CATEGORY_LABELS[item.category]?.[isEs ? "es" : "en"] || item.category}
                       </Badge>
                     </div>
+                    {/* Status badge */}
+                    {item.status && (
+                      <div className="absolute bottom-3 right-3">
+                        <Badge className={`border-0 text-xs ${
+                          item.status === "disponible"
+                            ? "bg-emerald-500 text-white"
+                            : item.status === "vendida"
+                            ? "bg-red-500/80 text-white"
+                            : "bg-amber-500 text-white"
+                        }`}>
+                          {item.status === "disponible"
+                            ? (isEs ? "En Stock" : "In Stock")
+                            : item.status === "vendida"
+                            ? (isEs ? "Vendida" : "Sold")
+                            : (isEs ? "Reservada" : "Reserved")}
+                        </Badge>
+                      </div>
+                    )}
                     {/* Dims */}
                     {getDims(item) && (
                       <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm rounded-md px-2.5 py-1 text-xs font-medium text-white">
@@ -279,13 +299,50 @@ export default function GalleryPage() {
                   {isEs ? "Dimensiones" : "Dimensions"}: <strong>{getDims(selectedItem)}</strong>
                 </p>
               )}
+              {/* Status + Price */}
+              <div className="flex items-center gap-3">
+                <Badge className={`border-0 ${
+                  selectedItem.status === "disponible"
+                    ? "bg-emerald-500 text-white"
+                    : selectedItem.status === "vendida"
+                    ? "bg-red-500/80 text-white"
+                    : "bg-amber-500 text-white"
+                }`}>
+                  {selectedItem.status === "disponible"
+                    ? (isEs ? "Disponible" : "Available")
+                    : selectedItem.status === "vendida"
+                    ? (isEs ? "Vendida" : "Sold")
+                    : (isEs ? "Reservada" : "Reserved")}
+                </Badge>
+                {selectedItem.status === "disponible" && selectedItem.salePriceUsd && Number(selectedItem.salePriceUsd) > 0 && (
+                  <span className="text-2xl font-bold text-primary">
+                    ${Number(selectedItem.salePriceUsd).toFixed(2)}
+                  </span>
+                )}
+              </div>
               <div className="flex gap-3 pt-2">
-                <Button asChild className="flex-1">
-                  <Link href="/designer">
-                    <Palette className="mr-2 h-4 w-4" />
-                    {isEs ? "Diseñar algo similar" : "Design something similar"}
-                  </Link>
-                </Button>
+                {selectedItem.status === "disponible" ? (
+                  <Button asChild className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                    <a
+                      href={`https://wa.me/584120993377?text=${encodeURIComponent(
+                        isEs
+                          ? `Hola! Quiero comprar la alfombra "${selectedItem.title}" (${getDims(selectedItem) || ""}). ¿Está disponible?`
+                          : `Hi! I want to buy the rug "${selectedItem.title}" (${getDims(selectedItem) || ""}). Is it available?`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {isEs ? "Comprar por WhatsApp" : "Buy via WhatsApp"}
+                    </a>
+                  </Button>
+                ) : (
+                  <Button asChild className="flex-1">
+                    <Link href="/designer">
+                      <Palette className="mr-2 h-4 w-4" />
+                      {isEs ? "Diseñar algo similar" : "Design something similar"}
+                    </Link>
+                  </Button>
+                )}
                 <Button variant="outline" asChild className="flex-1">
                   <a
                     href={`https://wa.me/584120993377?text=${encodeURIComponent(

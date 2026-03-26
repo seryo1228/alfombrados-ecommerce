@@ -24,7 +24,28 @@ export const publicApi = {
     return data;
   },
 
-  // Portfolio gallery
+  // Gallery (all rugs — available + sold)
+  getGallery: async (category?: string) => {
+    const params = category && category !== "all" ? { category } : {};
+    const { data } = await api.get<{
+      data: Array<{
+        id: string;
+        title: string;
+        description: string | null;
+        category: string;
+        imageUrl: string;
+        widthCm: string | null;
+        heightCm: string | null;
+        featured: boolean;
+        status: string;
+        salePriceUsd: string | null;
+      }>;
+      categories: string[];
+    }>("/public/gallery", { params });
+    return data;
+  },
+
+  // Portfolio (backwards compat alias)
   getPortfolio: async (category?: string) => {
     const params = category && category !== "all" ? { category } : {};
     const { data } = await api.get<{
