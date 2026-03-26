@@ -8,6 +8,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "sonner";
 import { GoogleAnalytics } from "@/components/analytics";
+import { MaintenanceGate } from "@/components/maintenance-gate";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-headline" });
@@ -32,9 +33,11 @@ export default async function LocaleLayout({
       <body className="antialiased min-h-screen flex flex-col">
         <GoogleAnalytics />
         <NextIntlClientProvider messages={messages}>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <MaintenanceGate>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </MaintenanceGate>
           <Toaster position="bottom-right" richColors />
         </NextIntlClientProvider>
       </body>

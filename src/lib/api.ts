@@ -18,6 +18,12 @@ const api = axios.create({
 
 // Public endpoints (no auth required)
 export const publicApi = {
+  // Site config
+  getConfig: async () => {
+    const { data } = await api.get<Record<string, Record<string, unknown>>>("/public/config");
+    return data;
+  },
+
   // Products
   getProducts: async (params?: {
     category?: string;
