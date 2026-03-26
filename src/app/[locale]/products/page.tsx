@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 import {
   Search,
@@ -234,10 +234,9 @@ export default function ProductsPage() {
     toast.success(`${rug.name} added to cart`);
   };
 
-  // Detect locale from URL
-  const isEs =
-    typeof window !== "undefined" &&
-    window.location.pathname.startsWith("/es");
+  // Detect locale from next-intl (works on both server and client)
+  const locale = useLocale();
+  const isEs = locale === "es";
 
   return (
     <div className="min-h-screen bg-background">
