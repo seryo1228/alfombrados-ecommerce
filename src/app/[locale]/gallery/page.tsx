@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Palette, ArrowLeft, Star, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { publicApi } from "@/lib/api";
+import { useCurrency, formatPrice } from "@/components/layout/currency-switcher";
 
 interface PortfolioItem {
   id: string;
@@ -41,6 +42,7 @@ const CATEGORY_LABELS: Record<string, { es: string; en: string }> = {
 export default function GalleryPage() {
   const locale = useLocale();
   const isEs = locale === "es";
+  const { currency, exchangeRate } = useCurrency();
 
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -316,7 +318,7 @@ export default function GalleryPage() {
                 </Badge>
                 {selectedItem.status === "disponible" && selectedItem.salePriceUsd && Number(selectedItem.salePriceUsd) > 0 && (
                   <span className="text-2xl font-bold text-primary">
-                    ${Number(selectedItem.salePriceUsd).toFixed(2)}
+                    {formatPrice(Number(selectedItem.salePriceUsd), currency, exchangeRate)}
                   </span>
                 )}
               </div>

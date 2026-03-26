@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Home",
-    "products": "Products",
+    "products": "Store",
     "gallery": "Gallery",
     "designer": "Rug Designer",
     "courses": "Courses",
@@ -103,7 +103,7 @@
     }
   },
   "products": {
-    "title": "Products",
+    "title": "Store",
     "subtitle": "Premium tufting materials and tools",
     "tabs": {
       "rugs": "Rugs in Stock",

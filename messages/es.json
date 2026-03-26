@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Inicio",
-    "products": "Productos",
+    "products": "Tienda",
     "gallery": "Galería",
     "designer": "Diseñador",
     "courses": "Cursos",
@@ -103,7 +103,7 @@
     }
   },
   "products": {
-    "title": "Productos",
+    "title": "Tienda",
     "subtitle": "Materiales y herramientas premium para tufting",
     "tabs": {
       "rugs": "Alfombras en Stock",

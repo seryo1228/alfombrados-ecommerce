@@ -71,9 +71,11 @@ export function formatPrice(
   currency: Currency,
   exchangeRate: number
 ): string {
+  const hasDecimals = (n: number) => n % 1 !== 0;
+  const fractionDigits = (n: number) => hasDecimals(n) ? 2 : 0;
   if (currency === "VES") {
     const ves = priceUsd * exchangeRate;
-    return `Bs. ${ves.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `Bs. ${ves.toLocaleString("es-VE", { minimumFractionDigits: fractionDigits(ves), maximumFractionDigits: 2 })}`;
   }
-  return `$${priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `$${priceUsd.toLocaleString("en-US", { minimumFractionDigits: fractionDigits(priceUsd), maximumFractionDigits: 2 })}`;
 }
