@@ -32,7 +32,9 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="font-headline font-black text-xl tracking-tight text-blue-800">
+        <Link href="/" className="flex items-center gap-2 font-headline font-black text-xl tracking-tight text-blue-800">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-icon.png" alt="" className="h-8 w-8" />
           Alfombra2
         </Link>
 
