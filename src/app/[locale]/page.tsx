@@ -25,6 +25,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { publicApi } from "@/lib/api";
 import dynamic from "next/dynamic";
 
 const YarnScene = dynamic(() => import("@/components/three/YarnScene"), {
@@ -266,8 +267,37 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
 /* ------------------------------------------------------------------ */
 /*  Main page                                                          */
 /* ------------------------------------------------------------------ */
+interface PortfolioImage {
+  url: string;
+  title?: string;
+  dims?: string;
+}
+
 export default function HomePage() {
   const t = useTranslations("home");
+  const [erpPortfolio, setErpPortfolio] = useState<PortfolioImage[]>([]);
+
+  useEffect(() => {
+    publicApi.getConfig().then((config) => {
+      try {
+        const imgs = config?.portfolio?.images;
+        if (Array.isArray(imgs) && imgs.length > 0) {
+          setErpPortfolio(imgs as PortfolioImage[]);
+        }
+      } catch { /* ignore */ }
+    }).catch(() => { /* ignore */ });
+  }, []);
+
+  // Merge ERP portfolio images with fallback placeholders
+  const portfolioItems = erpPortfolio.length > 0
+    ? erpPortfolio.map((img, i) => ({
+        id: 1000 + i,
+        image: img.url,
+        gradient: "",
+        dims: img.dims || "",
+        label: img.title || `Proyecto ${i + 1}`,
+      }))
+    : PORTFOLIO_ITEMS;
 
   return (
     <div className="flex flex-col">
@@ -353,7 +383,7 @@ export default function HomePage() {
             className="w-full max-w-6xl mx-auto"
           >
             <CarouselContent className="-ml-4">
-              {PORTFOLIO_ITEMS.map((item) => (
+              {portfolioItems.map((item) => (
                 <CarouselItem
                   key={item.id}
                   className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
@@ -403,10 +433,10 @@ export default function HomePage() {
                       </div>
                       <div className="p-4">
                         <h3 className="font-semibold text-sm">
-                          {t(`portfolio.items.item${item.id}.title`)}
+                          {item.id >= 1000 ? item.label : t(`portfolio.items.item${item.id}.title`)}
                         </h3>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {t(`portfolio.items.item${item.id}.description`)}
+                          {item.id >= 1000 ? (item.dims || "") : t(`portfolio.items.item${item.id}.description`)}
                         </p>
                       </div>
                     </CardContent>
