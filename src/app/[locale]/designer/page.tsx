@@ -7,13 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -31,7 +24,6 @@ import {
 } from "@/components/layout/currency-switcher";
 import { PRICE_PER_M2, MAX_DESIGNS_PER_SESSION, DESIGN_COUNT_COOKIE, WHATSAPP_NUMBER } from "@/lib/constants";
 import Cookies from "js-cookie";
-import type { DesignComplexity } from "@/types";
 
 export default function DesignerPage() {
   const t = useTranslations("designer");
@@ -40,7 +32,6 @@ export default function DesignerPage() {
   // Calculator state
   const [width, setWidth] = useState("100");
   const [height, setHeight] = useState("100");
-  const [complexity, setComplexity] = useState<DesignComplexity>("2colors");
 
   // AI Designer state
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -60,8 +51,7 @@ export default function DesignerPage() {
   const w = Number(width) || 0;
   const h = Number(height) || 0;
   const areaM2 = (w * h) / 10000;
-  const pricePerM2 = PRICE_PER_M2[complexity];
-  const estimatedPrice = areaM2 * pricePerM2;
+  const estimatedPrice = areaM2 * PRICE_PER_M2;
 
   // Image upload handler
   const handleImageUpload = useCallback(
@@ -152,7 +142,7 @@ export default function DesignerPage() {
     const message = encodeURIComponent(
       `Hi! I'd like to request a quote for a custom rug:\n\n` +
         `Dimensions: ${width}cm x ${height}cm (${areaM2.toFixed(2)} m²)\n` +
-        `Design Complexity: ${complexity}\n` +
+        `Price: $200/m²\n` +
         `Estimated Price: ${formatPrice(estimatedPrice, currency, exchangeRate)}\n\n` +
         `${generatedDesign ? "I have an AI-generated design to share." : ""}`
     );
@@ -209,23 +199,9 @@ export default function DesignerPage() {
               </div>
             </div>
 
-            {/* Design Complexity */}
-            <div className="space-y-2">
-              <Label>{t("calculator.design")}</Label>
-              <Select
-                value={complexity}
-                onValueChange={(v) => setComplexity(v as DesignComplexity)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="2colors">2 {t("calculator.colors")} — ${PRICE_PER_M2["2colors"]}/m²</SelectItem>
-                  <SelectItem value="3colors">3 {t("calculator.colors")} — ${PRICE_PER_M2["3colors"]}/m²</SelectItem>
-                  <SelectItem value="4colors">4 {t("calculator.colors")} — ${PRICE_PER_M2["4colors"]}/m²</SelectItem>
-                  <SelectItem value="5colors">5 {t("calculator.colors")} — ${PRICE_PER_M2["5colors"]}/m²</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Price per m2 info */}
+            <div className="bg-primary/5 rounded-lg p-3 text-center">
+              <p className="text-sm font-medium text-primary">$200.00 / m²</p>
             </div>
 
             <Separator />

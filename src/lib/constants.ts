@@ -1,12 +1,5 @@
-import type { DesignComplexity } from "@/types";
-
-// Price per m2 based on number of colors (USD)
-export const PRICE_PER_M2: Record<DesignComplexity, number> = {
-  "2colors": 120,
-  "3colors": 150,
-  "4colors": 180,
-  "5colors": 200,
-};
+// Fixed price per m2 (USD)
+export const PRICE_PER_M2 = 200;
 
 // Delivery zones
 export const DELIVERY_ZONES = {
