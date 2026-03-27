@@ -73,7 +73,7 @@ export function formatPrice(
 ): string {
   if (currency === "VES") {
     const ves = priceUsd * exchangeRate;
-    return `Bs. ${ves.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `Bs. ${ves.toLocaleString("es-VE", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
   }
-  return `$${priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `$${priceUsd.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
 }
