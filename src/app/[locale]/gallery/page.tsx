@@ -25,18 +25,18 @@ interface PortfolioItem {
   salePriceUsd?: string | null;
 }
 
-const CATEGORY_LABELS: Record<string, { es: string; en: string }> = {
-  all:            { es: "Todos", en: "All" },
-  anime:          { es: "Anime", en: "Anime" },
-  empresarial:    { es: "Empresarial", en: "Corporate" },
-  lujo:           { es: "Lujo", en: "Luxury" },
-  animales:       { es: "Animales", en: "Animals" },
-  deportes:       { es: "Deportes", en: "Sports" },
-  infantil:       { es: "Infantil", en: "Kids" },
-  abstracto:      { es: "Abstracto", en: "Abstract" },
-  personalizado:  { es: "Personalizado", en: "Custom" },
-  oficina:        { es: "Oficina", en: "Office" },
-  otro:           { es: "Otro", en: "Other" },
+const CATEGORY_LABELS: Record<string, { es: string; en: string; emoji: string; color: string }> = {
+  all:            { es: "Todos", en: "All", emoji: "✨", color: "from-blue-500 to-indigo-600" },
+  anime:          { es: "Anime", en: "Anime", emoji: "🎌", color: "from-rose-500 to-pink-600" },
+  empresarial:    { es: "Empresarial", en: "Corporate", emoji: "🏢", color: "from-slate-500 to-gray-700" },
+  lujo:           { es: "Lujo", en: "Luxury", emoji: "👑", color: "from-amber-500 to-yellow-600" },
+  animales:       { es: "Animales", en: "Animals", emoji: "🐾", color: "from-emerald-500 to-green-600" },
+  deportes:       { es: "Deportes", en: "Sports", emoji: "⚽", color: "from-sky-500 to-cyan-600" },
+  infantil:       { es: "Infantil", en: "Kids", emoji: "🧸", color: "from-orange-400 to-amber-500" },
+  abstracto:      { es: "Abstracto", en: "Abstract", emoji: "🎨", color: "from-violet-500 to-purple-600" },
+  personalizado:  { es: "Personalizado", en: "Custom", emoji: "🎯", color: "from-teal-500 to-emerald-600" },
+  oficina:        { es: "Oficina", en: "Office", emoji: "💼", color: "from-blue-600 to-indigo-700" },
+  otro:           { es: "Otro", en: "Other", emoji: "🧶", color: "from-pink-500 to-rose-600" },
 };
 
 export default function GalleryPage() {
@@ -113,21 +113,36 @@ export default function GalleryPage() {
       <section className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm border-b py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            {/* Category tabs */}
+            {/* Category chips */}
             <div className="flex flex-wrap gap-2">
               {allCategories
                 .filter((c) => c === "all" || categories.includes(c) || activeCategory === c)
-                .map((cat) => (
-                  <Button
-                    key={cat}
-                    variant={activeCategory === cat ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => { setActiveCategory(cat); setSearch(""); }}
-                    className="text-xs"
-                  >
-                    {CATEGORY_LABELS[cat]?.[isEs ? "es" : "en"] || cat}
-                  </Button>
-                ))}
+                .map((cat) => {
+                  const label = CATEGORY_LABELS[cat];
+                  const isActive = activeCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => { setActiveCategory(cat); setSearch(""); }}
+                      className={`
+                        group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium
+                        transition-all duration-300 ease-out cursor-pointer select-none
+                        ${isActive
+                          ? `bg-gradient-to-r ${label?.color || "from-blue-500 to-indigo-600"} text-white shadow-lg shadow-primary/25 scale-105`
+                          : "bg-card border border-border text-muted-foreground hover:border-primary/40 hover:text-foreground hover:shadow-md hover:scale-105 hover:-translate-y-0.5"
+                        }
+                      `}
+                    >
+                      <span className={`text-base transition-transform duration-300 ${isActive ? "animate-bounce" : "group-hover:scale-125 group-hover:rotate-12"}`}>
+                        {label?.emoji || "🏷️"}
+                      </span>
+                      <span>{label?.[isEs ? "es" : "en"] || cat}</span>
+                      {isActive && (
+                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full shadow-sm border-2 border-current animate-ping opacity-75" />
+                      )}
+                    </button>
+                  );
+                })}
             </div>
 
             {/* Search */}
