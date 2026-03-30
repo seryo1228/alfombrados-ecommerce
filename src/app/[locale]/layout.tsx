@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/footer";
 import { Toaster } from "sonner";
 import { GoogleAnalytics } from "@/components/analytics";
 import { MaintenanceGate } from "@/components/maintenance-gate";
+import { ProgressBar } from "@/components/progress-bar";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-headline" });
@@ -38,6 +39,7 @@ export default async function LocaleLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </MaintenanceGate>
+          <ProgressBar />
           <Toaster position="bottom-right" richColors />
         </NextIntlClientProvider>
       </body>
