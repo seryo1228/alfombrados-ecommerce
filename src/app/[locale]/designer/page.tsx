@@ -51,7 +51,8 @@ export default function DesignerPage() {
   const w = Number(width) || 0;
   const h = Number(height) || 0;
   const areaM2 = (w * h) / 10000;
-  const estimatedPrice = areaM2 * PRICE_PER_M2;
+  const MIN_PRICE = 40;
+  const estimatedPrice = Math.max(areaM2 * PRICE_PER_M2, areaM2 > 0 ? MIN_PRICE : 0);
 
   // Image upload handler
   const handleImageUpload = useCallback(
@@ -217,6 +218,11 @@ export default function DesignerPage() {
               <p className="text-4xl font-bold text-primary">
                 {formatPrice(estimatedPrice, currency, exchangeRate)}
               </p>
+              {areaM2 > 0 && areaM2 * PRICE_PER_M2 < MIN_PRICE && (
+                <p className="text-xs text-amber-600 font-medium mt-1">
+                  {t("calculator.minPrice") || "Precio mínimo: $40"}
+                </p>
+              )}
               <p className="text-xs text-muted-foreground mt-2">
                 {t("calculator.priceNote")}
               </p>

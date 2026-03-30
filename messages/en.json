@@ -151,7 +151,8 @@
       "estimate": "Estimated Price",
       "area": "Area",
       "requestQuote": "Request Quote",
-      "priceNote": "Final price may vary based on design details"
+      "priceNote": "Final price may vary based on design details",
+      "minPrice": "Minimum price: $40"
     },
     "ai": {
       "title": "AI Design Studio",

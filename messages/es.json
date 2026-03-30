@@ -151,7 +151,8 @@
       "estimate": "Precio Estimado",
       "area": "Área",
       "requestQuote": "Solicitar Cotización",
-      "priceNote": "El precio final puede variar según los detalles del diseño"
+      "priceNote": "El precio final puede variar según los detalles del diseño",
+      "minPrice": "Precio mínimo: $40"
     },
     "ai": {
       "title": "Estudio de Diseño IA",
