@@ -141,7 +141,7 @@ export default function DesignerPage() {
   // WhatsApp quote
   const sendWhatsAppQuote = () => {
     const message = encodeURIComponent(
-      `Asesor: Hola! Me gustaría cotizar una alfombra personalizada:\n\n` +
+      `Me puedo comunicar con un asesor\n\n` +
         `Dimensiones: ${width}cm x ${height}cm (${areaM2.toFixed(2)} m²)\n` +
         `Precio por m²: $200\n` +
         `Precio estimado: ${formatPrice(estimatedPrice, currency, exchangeRate)}\n\n` +
