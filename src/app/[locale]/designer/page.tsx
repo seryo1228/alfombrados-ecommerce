@@ -141,11 +141,11 @@ export default function DesignerPage() {
   // WhatsApp quote
   const sendWhatsAppQuote = () => {
     const message = encodeURIComponent(
-      `Hi! I'd like to request a quote for a custom rug:\n\n` +
-        `Dimensions: ${width}cm x ${height}cm (${areaM2.toFixed(2)} m²)\n` +
-        `Price: $200/m²\n` +
-        `Estimated Price: ${formatPrice(estimatedPrice, currency, exchangeRate)}\n\n` +
-        `${generatedDesign ? "I have an AI-generated design to share." : ""}`
+      `Asesor: Hola! Me gustaría cotizar una alfombra personalizada:\n\n` +
+        `Dimensiones: ${width}cm x ${height}cm (${areaM2.toFixed(2)} m²)\n` +
+        `Precio por m²: $200\n` +
+        `Precio estimado: ${formatPrice(estimatedPrice, currency, exchangeRate)}\n\n` +
+        `${generatedDesign ? "Tengo un diseño generado con IA para compartir." : ""}`
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER.replace("+", "")}?text=${message}`, "_blank");
   };
