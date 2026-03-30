@@ -207,7 +207,13 @@ export default function CoursesPage() {
   useEffect(() => {
     publicApi
       .getCourses()
-      .then((res) => setCourses(res.data))
+      .then((res) => {
+        const today = new Date().toISOString().split("T")[0];
+        const upcoming = res.data.filter(
+          (c: Course) => !c.courseDate || c.courseDate >= today
+        );
+        setCourses(upcoming);
+      })
       .catch(() => toast.error("Error loading courses"))
       .finally(() => setLoading(false));
   }, []);
