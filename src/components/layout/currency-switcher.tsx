@@ -67,13 +67,15 @@ export function CurrencySwitcher() {
 }
 
 export function formatPrice(
-  priceUsd: number,
+  priceUsd: number | string,
   currency: Currency,
   exchangeRate: number
 ): string {
+  const price = typeof priceUsd === "string" ? parseFloat(priceUsd) : priceUsd;
+  if (isNaN(price)) return "$0";
   if (currency === "VES") {
-    const ves = priceUsd * exchangeRate;
+    const ves = price * exchangeRate;
     return `Bs. ${ves.toLocaleString("es-VE", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
   }
-  return `$${priceUsd.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  return `$${price.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
 }
