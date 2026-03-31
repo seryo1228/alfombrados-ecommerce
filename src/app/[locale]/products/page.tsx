@@ -105,6 +105,26 @@ const MOCK_RUGS: RugDesign[] = [
 
 const ITEMS_PER_PAGE = 9;
 
+const UNIT_LABELS: Record<string, string> = {
+  unidades: "uds",
+  gramos: "g",
+  kilogramos: "kg",
+  metros: "m",
+  m2: "m²",
+  litros: "L",
+  rollos: "rollos",
+  piezas: "pzas",
+};
+
+function formatStock(stock: number | string, unit?: string): string {
+  const n = typeof stock === "string" ? parseFloat(stock) : stock;
+  if (isNaN(n)) return "0";
+  // Clean decimals: no trailing zeros, max 2 decimals
+  const formatted = n % 1 === 0 ? String(Math.round(n)) : n.toFixed(2).replace(/\.?0+$/, "");
+  const unitLabel = unit ? ` ${UNIT_LABELS[unit] || unit}` : "";
+  return `${formatted}${unitLabel}`;
+}
+
 /* ══════════════════════════════════════════════════════════════════ */
 
 export default function ProductsPage() {
@@ -617,7 +637,7 @@ export default function ProductsPage() {
                             }`}
                           >
                             {product.currentStock > 0
-                              ? `${t("inStock")} (${product.currentStock})`
+                              ? `${t("inStock")} (${formatStock(product.currentStock, product.baseUnit)})`
                               : t("outOfStock")}
                           </span>
                         </div>
