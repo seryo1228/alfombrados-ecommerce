@@ -388,7 +388,8 @@ export default function HomePage() {
                   key={item.id}
                   className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
                 >
-                  <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-500">
+                  <Link href="/gallery">
+                  <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer">
                     <CardContent className="p-0">
                       <div
                         className={`aspect-square relative overflow-hidden ${item.image ? "bg-muted" : `bg-gradient-to-br ${item.gradient}`}`}
@@ -441,6 +442,7 @@ export default function HomePage() {
                       </div>
                     </CardContent>
                   </Card>
+                  </Link>
                 </CarouselItem>
               ))}
             </CarouselContent>

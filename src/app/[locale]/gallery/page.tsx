@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Palette, ArrowLeft, Star, Search } from "lucide-react";
+import { Palette, ArrowLeft, Star, Search, ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { publicApi } from "@/lib/api";
 import { useCurrencyStore, formatPrice } from "@/components/layout/currency-switcher";
@@ -18,6 +18,7 @@ interface PortfolioItem {
   description: string | null;
   category: string;
   imageUrl: string;
+  extraImages?: string[];
   widthCm: string | null;
   heightCm: string | null;
   featured: boolean;
@@ -50,6 +51,15 @@ export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
+  const [imageIndex, setImageIndex] = useState(0);
+
+  const getAllImages = (item: PortfolioItem) => {
+    const imgs = [item.imageUrl];
+    if (item.extraImages && item.extraImages.length > 0) {
+      imgs.push(...item.extraImages);
+    }
+    return imgs;
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -197,7 +207,7 @@ export default function GalleryPage() {
                 <Card
                   key={item.id}
                   className="group overflow-hidden cursor-pointer border-0 shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
-                  onClick={() => setSelectedItem(item)}
+                  onClick={() => { setSelectedItem(item); setImageIndex(0); }}
                 >
                   <div className="aspect-square relative overflow-hidden bg-muted">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -247,6 +257,13 @@ export default function GalleryPage() {
                         </Badge>
                       </div>
                     )}
+                    {/* Multi-image indicator */}
+                    {item.extraImages && item.extraImages.length > 0 && (
+                      <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm rounded-md px-2 py-1 text-xs font-medium text-white flex items-center gap-1">
+                        <ImageIcon className="h-3 w-3" />
+                        {1 + item.extraImages.length}
+                      </div>
+                    )}
                     {/* Dims */}
                     {getDims(item) && (
                       <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm rounded-md px-2.5 py-1 text-xs font-medium text-white">
@@ -278,12 +295,55 @@ export default function GalleryPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={selectedItem.imageUrl}
-                alt={selectedItem.title}
-                className="w-full max-h-[60vh] object-contain bg-muted rounded-t-2xl"
-              />
+              {/* Image carousel */}
+              {(() => {
+                const allImgs = getAllImages(selectedItem);
+                return (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={allImgs[imageIndex]}
+                      alt={`${selectedItem.title} - ${imageIndex + 1}`}
+                      className="w-full max-h-[60vh] object-contain bg-muted rounded-t-2xl"
+                    />
+                    {/* Nav arrows */}
+                    {allImgs.length > 1 && (
+                      <>
+                        <button
+                          onClick={() => setImageIndex((prev) => (prev - 1 + allImgs.length) % allImgs.length)}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors"
+                        >
+                          <ChevronLeft className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => setImageIndex((prev) => (prev + 1) % allImgs.length)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors"
+                        >
+                          <ChevronRight className="h-5 w-5" />
+                        </button>
+                        {/* Dots indicator */}
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                          {allImgs.map((_, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setImageIndex(i)}
+                              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                                i === imageIndex
+                                  ? "bg-white scale-110 shadow-md"
+                                  : "bg-white/50 hover:bg-white/80"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        {/* Counter */}
+                        <div className="absolute top-4 right-16 bg-black/50 backdrop-blur-sm rounded-md px-2.5 py-1 text-xs font-medium text-white">
+                          {imageIndex + 1} / {allImgs.length}
+                        </div>
+                      </>
+                    )}
+                  </>
+                );
+              })()}
               <button
                 onClick={() => setSelectedItem(null)}
                 className="absolute top-4 right-4 bg-black/50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition-colors text-lg"
@@ -299,6 +359,27 @@ export default function GalleryPage() {
                 </div>
               )}
             </div>
+            {/* Thumbnail strip */}
+            {(() => {
+              const allImgs = getAllImages(selectedItem);
+              if (allImgs.length <= 1) return null;
+              return (
+                <div className="flex gap-2 px-6 py-3 overflow-x-auto bg-muted/50">
+                  {allImgs.map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setImageIndex(i)}
+                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                        i === imageIndex ? "border-primary ring-2 ring-primary/30" : "border-transparent opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
             <div className="p-6 space-y-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
