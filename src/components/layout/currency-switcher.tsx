@@ -35,14 +35,20 @@ export function CurrencySwitcher() {
   const { currency, setCurrency, rateLoaded, setExchangeRate, setRateLoaded } =
     useCurrencyStore();
 
-  // Fetch exchange rate from ERP on mount
+  // Fetch EUR exchange rate from ERP (BCV scraper)
   useEffect(() => {
     if (rateLoaded) return;
     publicApi
       .getExchangeRate()
       .then((rate) => {
-        if (rate.rateVesPerUsd && rate.rateVesPerUsd > 0) {
-          setExchangeRate(Number(rate.rateVesPerUsd));
+        // Use EUR rate from BCV (primary), fall back to USD rate
+        const eurRate = Number(rate.vesPerEur);
+        const usdRate = Number(rate.vesPerUsd);
+        if (eurRate > 0) {
+          setExchangeRate(eurRate);
+          setRateLoaded(true);
+        } else if (usdRate > 0) {
+          setExchangeRate(usdRate);
           setRateLoaded(true);
         }
       })
