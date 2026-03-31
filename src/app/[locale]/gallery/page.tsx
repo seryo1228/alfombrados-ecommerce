@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Palette, ArrowLeft, Star, Search, ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
+import { Palette, ArrowLeft, Star, Search, ChevronLeft, ChevronRight, ImageIcon, ShoppingCart } from "lucide-react";
+import { useCartStore } from "@/store/cart";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { publicApi } from "@/lib/api";
 import { useCurrencyStore, formatPrice } from "@/components/layout/currency-switcher";
@@ -44,6 +46,7 @@ export default function GalleryPage() {
   const locale = useLocale();
   const isEs = locale === "es";
   const { currency, exchangeRate } = useCurrencyStore();
+  const addToCart = useCartStore((s) => s.addItem);
 
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -441,19 +444,40 @@ export default function GalleryPage() {
                     </Link>
                   </Button>
                 )}
-                <Button variant="outline" asChild className="flex-1">
-                  <a
-                    href={`https://wa.me/584120993377?text=${encodeURIComponent(
-                      isEs
-                        ? `Hola! Me interesa una alfombra como "${selectedItem.title}". ¿Pueden darme más información?`
-                        : `Hi! I'm interested in a rug like "${selectedItem.title}". Can you give me more info?`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {selectedItem.status === "disponible" && selectedItem.salePriceUsd && Number(selectedItem.salePriceUsd) > 0 && (
+                  <Button
+                    className="flex-1"
+                    onClick={() => {
+                      addToCart({
+                        productId: selectedItem.id,
+                        name: selectedItem.title,
+                        priceUsd: Number(selectedItem.salePriceUsd),
+                        imageUrl: selectedItem.imageUrl || undefined,
+                        maxStock: 1,
+                      });
+                      toast.success(isEs ? "Agregado al carrito" : "Added to cart");
+                      setSelectedItem(null);
+                    }}
                   >
-                    WhatsApp
-                  </a>
-                </Button>
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    {isEs ? "Agregar al Carrito" : "Add to Cart"}
+                  </Button>
+                )}
+                {selectedItem.status !== "disponible" && (
+                  <Button variant="outline" asChild className="flex-1">
+                    <a
+                      href={`https://wa.me/584120993377?text=${encodeURIComponent(
+                        isEs
+                          ? `Me puedo comunicar con un asesor\n\nMe interesa una alfombra como "${selectedItem.title}". ¿Pueden darme más información?`
+                          : `I'd like to speak with an advisor\n\nI'm interested in a rug like "${selectedItem.title}". Can you give me more info?`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      WhatsApp
+                    </a>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
