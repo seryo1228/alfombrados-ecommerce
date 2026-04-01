@@ -127,6 +127,28 @@ export const publicApi = {
     return data;
   },
 
+  // Stripe checkout
+  createStripeCheckout: async (order: Omit<OrderSubmission, "paymentMethod">) => {
+    const { data } = await api.post<{
+      orderId: string;
+      orderNumber: string;
+      totalUsd: number;
+      sessionUrl: string;
+    }>("/public/checkout/stripe", order);
+    return data;
+  },
+
+  // Binance Pay checkout
+  createBinanceCheckout: async (order: Omit<OrderSubmission, "paymentMethod">) => {
+    const { data } = await api.post<{
+      orderId: string;
+      orderNumber: string;
+      totalUsd: number;
+      checkoutUrl: string;
+    }>("/public/checkout/binance", order);
+    return data;
+  },
+
   // Course enrollment
   enrollCourse: async (
     courseId: string | number,
