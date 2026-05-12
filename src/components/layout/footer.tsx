@@ -6,7 +6,6 @@ import { MessageCircle } from "lucide-react";
 
 export function Footer() {
   const t = useTranslations("footer");
-  const tn = useTranslations("nav");
 
   return (
     <footer className="bg-slate-50 border-t border-slate-200">
@@ -18,30 +17,35 @@ export function Footer() {
               Alfombra2
             </div>
             <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
-              Socially Weaving Futures in San Antonio de los Altos. Transforming lives through the art of tufting.
+              {t("tagline")}
             </p>
             <p className="text-sm text-blue-700 font-medium mt-3">
-              International Shipping Available 🌍
+              {t("shipping")}
             </p>
           </div>
 
           {/* Explorar */}
           <div>
-            <h4 className="font-semibold text-slate-900 mb-3">Explorar</h4>
+            <h4 className="font-semibold text-slate-900 mb-3">{t("explore")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/products" className="hover:text-primary transition-colors">
-                  Impact Mission
+                <Link href="/social-impact" className="hover:text-primary transition-colors">
+                  {t("impactMission")}
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:text-primary transition-colors">
-                  Shipping Policy
+                <Link href="/shipping-policy" className="hover:text-primary transition-colors">
+                  {t("shippingPolicy")}
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:text-primary transition-colors">
-                  Terms
+                <Link href="/terms" className="hover:text-primary transition-colors">
+                  {t("terms")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-primary transition-colors">
+                  {t("privacy")}
                 </Link>
               </li>
             </ul>
@@ -49,21 +53,21 @@ export function Footer() {
 
           {/* Categorias */}
           <div>
-            <h4 className="font-semibold text-slate-900 mb-3">Categor&iacute;as</h4>
+            <h4 className="font-semibold text-slate-900 mb-3">{t("categories")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link href="/products" className="hover:text-primary transition-colors">
-                  M&aacute;quinas
+                  {t("machines")}
                 </Link>
               </li>
               <li>
                 <Link href="/products" className="hover:text-primary transition-colors">
-                  Lanas &amp; Hilos
+                  {t("yarn")}
                 </Link>
               </li>
               <li>
                 <Link href="/products" className="hover:text-primary transition-colors">
-                  Bastidores
+                  {t("frames")}
                 </Link>
               </li>
             </ul>
@@ -71,7 +75,7 @@ export function Footer() {
 
           {/* Siguenos */}
           <div>
-            <h4 className="font-semibold text-slate-900 mb-3">S&iacute;guenos</h4>
+            <h4 className="font-semibold text-slate-900 mb-3">{t("follow")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
@@ -97,7 +101,7 @@ export function Footer() {
 
         <div className="border-t border-slate-200 mt-10 pt-6">
           <p className="text-sm text-muted-foreground text-center">
-            &copy; 2024 Alfombra2. Socially Weaving Futures in San Antonio de los Altos. All rights reserved.
+            &copy; {t("copyright")}
           </p>
         </div>
       </div>
