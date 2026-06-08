@@ -3,33 +3,33 @@
 @tailwind utilities;
 
 @layer base {
-  /* Alfombra2 — Light modern palette
-     Based on Material 3 design tokens
-     Primary:   #2b5aa9 (royal blue)
-     Secondary: #006494 (teal blue)
-     Surface:   #f2fcf4 (mint white)
-     Tertiary:  #4e5d73 (slate blue)
+  /* Alfombra2 — Brand palette
+     Primary:   #1779c2 — HSL 206 79% 43%  (brand blue)
+     Deep:      #2354a2 — HSL 217 64% 39%  (deep navy)
+     Sky:       #369cdb — HSL 203 70% 54%  (light accent)
+     Tint:      #d1e1fb — HSL 217 84% 90%  (pale blue)
+     Neutral:   #6e7872 — HSL 144  4% 45%  (gray-green muted)
   */
   :root {
-    --background: 140 33% 97%;
-    --foreground: 160 25% 10%;
+    --background: 217 40% 98%;
+    --foreground: 218 40% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 160 25% 10%;
+    --card-foreground: 218 40% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 160 25% 10%;
-    --primary: 217 60% 41%;
+    --popover-foreground: 218 40% 12%;
+    --primary: 206 79% 43%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 200 100% 29%;
+    --secondary: 203 70% 54%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 140 18% 92%;
-    --muted-foreground: 215 15% 40%;
-    --accent: 200 100% 29%;
+    --muted: 217 40% 95%;
+    --muted-foreground: 144 4% 42%;
+    --accent: 217 64% 39%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 210 20% 88%;
-    --input: 210 20% 88%;
-    --ring: 217 60% 41%;
+    --border: 217 30% 90%;
+    --input: 217 30% 90%;
+    --ring: 206 79% 43%;
     --radius: 0.5rem;
   }
 
@@ -40,19 +40,19 @@
     --card-foreground: 214 40% 92%;
     --popover: 220 18% 10%;
     --popover-foreground: 214 40% 92%;
-    --primary: 217 60% 55%;
+    --primary: 206 70% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 200 80% 45%;
+    --secondary: 203 60% 60%;
     --secondary-foreground: 0 0% 100%;
     --muted: 220 10% 14%;
-    --muted-foreground: 207 60% 65%;
-    --accent: 200 80% 45%;
+    --muted-foreground: 144 4% 60%;
+    --accent: 217 60% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 12% 16%;
     --input: 220 12% 16%;
-    --ring: 217 60% 55%;
+    --ring: 206 70% 55%;
   }
 
   * {
@@ -84,4 +84,12 @@
 
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
