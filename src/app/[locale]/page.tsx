@@ -5,13 +5,6 @@ import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import {
   Sparkles,
   Package,
   GraduationCap,
@@ -266,68 +259,73 @@ export default function HomePage() {
             </p>
           </div>
 
-          <Carousel opts={{ align: "start", loop: true }} className="w-full max-w-6xl mx-auto">
-            <CarouselContent className="-ml-4">
-              {portfolioItems.map((item) => (
-                <CarouselItem key={item.id} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                  <Link href="/gallery">
-                    <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer">
-                      <CardContent className="p-0">
-                        <div className={`aspect-square relative overflow-hidden ${item.image ? "bg-muted" : `bg-gradient-to-br ${item.gradient}`}`}>
-                          {item.image ? (
-                            /* eslint-disable-next-line @next/next/no-img-element */
-                            <img
-                              src={item.image}
-                              alt={item.label}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                            />
-                          ) : (
-                            <>
-                              <div className="absolute inset-0 opacity-20">
-                                <svg className="w-full h-full" viewBox="0 0 200 200">
-                                  <defs>
-                                    <pattern id={`p-${item.id}`} x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                                      <circle cx="20" cy="20" r="8" fill="white" fillOpacity="0.3" />
-                                    </pattern>
-                                  </defs>
-                                  <rect width="200" height="200" fill={`url(#p-${item.id})`} />
-                                </svg>
-                              </div>
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-white/70 font-medium text-sm">{item.label}</span>
-                              </div>
-                            </>
-                          )}
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500 flex items-center justify-center">
-                            <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                              <div className="bg-white/90 backdrop-blur-sm rounded-full px-5 py-2.5 text-sm font-medium text-foreground shadow-lg">
-                                {t("portfolio.viewProject")}
-                              </div>
+          {/* Infinite marquee — duplicates the item list so the loop is seamless */}
+          <div
+            className="marquee-mask marquee-pause overflow-hidden w-full"
+            style={{ ['--marquee-duration' as string]: `${Math.max(30, portfolioItems.length * 6)}s` }}
+          >
+            <div className="marquee-track flex gap-6 w-max">
+              {[...portfolioItems, ...portfolioItems].map((item, idx) => (
+                <Link
+                  href="/gallery"
+                  key={`${item.id}-${idx}`}
+                  aria-hidden={idx >= portfolioItems.length ? "true" : undefined}
+                  className="block w-[280px] sm:w-[320px] lg:w-[360px] shrink-0"
+                >
+                  <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer">
+                    <CardContent className="p-0">
+                      <div className={`aspect-square relative overflow-hidden ${item.image ? "bg-muted" : `bg-gradient-to-br ${item.gradient}`}`}>
+                        {item.image ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={item.image}
+                            alt={item.label}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          />
+                        ) : (
+                          <>
+                            <div className="absolute inset-0 opacity-20">
+                              <svg className="w-full h-full" viewBox="0 0 200 200">
+                                <defs>
+                                  <pattern id={`p-${item.id}-${idx}`} x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                    <circle cx="20" cy="20" r="8" fill="white" fillOpacity="0.3" />
+                                  </pattern>
+                                </defs>
+                                <rect width="200" height="200" fill={`url(#p-${item.id}-${idx})`} />
+                              </svg>
+                            </div>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-white/70 font-medium text-sm">{item.label}</span>
+                            </div>
+                          </>
+                        )}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-full px-5 py-2.5 text-sm font-medium text-foreground shadow-lg">
+                              {t("portfolio.viewProject")}
                             </div>
                           </div>
-                          {item.dims && (
-                            <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm rounded-md px-2.5 py-1 text-xs font-medium text-white">
-                              {item.dims}
-                            </div>
-                          )}
                         </div>
-                        <div className="p-4">
-                          <h3 className="font-semibold text-sm">
-                            {item.id >= 1000 ? item.label : t(`portfolio.items.item${item.id}.title`)}
-                          </h3>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {item.id >= 1000 ? (item.dims || "") : t(`portfolio.items.item${item.id}.description`)}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </CarouselItem>
+                        {item.dims && (
+                          <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm rounded-md px-2.5 py-1 text-xs font-medium text-white">
+                            {item.dims}
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-semibold text-sm">
+                          {item.id >= 1000 ? item.label : t(`portfolio.items.item${item.id}.title`)}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {item.id >= 1000 ? (item.dims || "") : t(`portfolio.items.item${item.id}.description`)}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12" />
-            <CarouselNext className="hidden md:flex -right-12" />
-          </Carousel>
+            </div>
+          </div>
 
           <div className="text-center mt-10">
             <Button variant="outline" asChild className="group">
