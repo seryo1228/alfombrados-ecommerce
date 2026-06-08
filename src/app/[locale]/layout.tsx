@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 import { GoogleAnalytics } from "@/components/analytics";
 import { MaintenanceGate } from "@/components/maintenance-gate";
 import { ProgressBar } from "@/components/progress-bar";
+import { LenisProvider } from "@/components/lenis-provider";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-headline" });
@@ -32,6 +33,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={cn("font-sans", jakarta.variable, manrope.variable)}>
       <body className="antialiased min-h-screen flex flex-col">
+        <LenisProvider />
         <GoogleAnalytics />
         <NextIntlClientProvider messages={messages}>
           <MaintenanceGate>

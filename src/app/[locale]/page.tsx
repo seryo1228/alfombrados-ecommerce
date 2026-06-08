@@ -47,6 +47,7 @@ function Instagram({ className }: { className?: string }) {
 }
 import { useState, useEffect, useRef } from "react";
 import { publicApi } from "@/lib/api";
+import { Reveal } from "@/components/reveal";
 
 /* ─── Brand colors ─────────────────────────────────────────── */
 const BRAND = {
@@ -467,6 +468,67 @@ export default function HomePage() {
     };
   }, [selectedItem]);
 
+  // Subtle parallax on hero portfolio cards — driven by Lenis when available,
+  // falls back to IntersectionObserver-based passive listener otherwise.
+  // Each card has its own ref + a per-card multiplier so they move at slightly
+  // different speeds for depth.
+  const heroCard1Ref = useRef<HTMLButtonElement | null>(null);
+  const heroCard2Ref = useRef<HTMLButtonElement | null>(null);
+  const heroCard3Ref = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
+    const refs = [
+      { el: heroCard1Ref.current, factor: -0.08 },
+      { el: heroCard2Ref.current, factor:  0.06 },
+      { el: heroCard3Ref.current, factor: -0.10 },
+    ];
+
+    let rafId: number;
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    function apply() {
+      ticking = false;
+      const y = lastScrollY;
+      for (const { el, factor } of refs) {
+        if (!el) continue;
+        // Translate is relative to the document scroll, capped to keep
+        // cards from drifting too far out of their slot
+        const offset = Math.max(-40, Math.min(40, y * factor * 0.25));
+        el.style.transform = `translate3d(0, ${offset}px, 0)`;
+      }
+    }
+
+    function onScroll() {
+      lastScrollY = window.scrollY;
+      if (!ticking) {
+        rafId = requestAnimationFrame(apply);
+        ticking = true;
+      }
+    }
+
+    // Use Lenis's scroll event if present (smoother), else native passive
+    const lenis = (window as unknown as { __lenis?: { on: (e: string, cb: (v: { scroll: number }) => void) => void; off: (e: string, cb: (v: { scroll: number }) => void) => void } }).__lenis;
+    const lenisHandler = (v: { scroll: number }) => { lastScrollY = v.scroll; if (!ticking) { rafId = requestAnimationFrame(apply); ticking = true; } };
+
+    if (lenis) {
+      lenis.on("scroll", lenisHandler);
+    } else {
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }
+
+    apply();
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (lenis) lenis.off("scroll", lenisHandler);
+      else window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
   useEffect(() => {
     publicApi.getConfig().then((config) => {
       try {
@@ -594,10 +656,11 @@ export default function HomePage() {
               <div className="grid grid-cols-2 gap-3 md:gap-4 relative">
                 {/* Card 1 — top left, square */}
                 <button
+                  ref={heroCard1Ref}
                   type="button"
                   onClick={() => portfolioItems[0] && setSelectedItem(portfolioItems[0])}
                   aria-label={isEs ? "Ver proyecto" : "View project"}
-                  className="aspect-square rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 p-0"
+                  className="aspect-square rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-shadow duration-500 border-0 p-0 will-change-transform"
                   style={{ backgroundColor: portfolioItems[0]?.image ? undefined : BRAND.deep }}
                 >
                   {portfolioItems[0]?.image ? (
@@ -619,10 +682,11 @@ export default function HomePage() {
 
                 {/* Card 2 — right, tall (spans 2 rows) */}
                 <button
+                  ref={heroCard2Ref}
                   type="button"
                   onClick={() => portfolioItems[1] && setSelectedItem(portfolioItems[1])}
                   aria-label={isEs ? "Ver proyecto" : "View project"}
-                  className="row-span-2 rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 p-0"
+                  className="row-span-2 rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-shadow duration-500 border-0 p-0 will-change-transform"
                   style={{ backgroundColor: portfolioItems[1]?.image ? undefined : BRAND.blue }}
                 >
                   {portfolioItems[1]?.image ? (
@@ -644,10 +708,11 @@ export default function HomePage() {
 
                 {/* Card 3 — bottom left, square */}
                 <button
+                  ref={heroCard3Ref}
                   type="button"
                   onClick={() => portfolioItems[2] && setSelectedItem(portfolioItems[2])}
                   aria-label={isEs ? "Ver proyecto" : "View project"}
-                  className="aspect-square rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 p-0"
+                  className="aspect-square rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-shadow duration-500 border-0 p-0 will-change-transform"
                   style={{ backgroundColor: portfolioItems[2]?.image ? undefined : BRAND.sky }}
                 >
                   {portfolioItems[2]?.image ? (
@@ -718,14 +783,14 @@ export default function HomePage() {
       {/* ══════════════════════ PORTFOLIO ══════════════════════ */}
       <section className="py-20 md:py-28">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14">
+          <Reveal className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               {t("portfolio.title")}
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               {t("portfolio.subtitle")}
             </p>
-          </div>
+          </Reveal>
 
           {/* Infinite marquee — duplicates the item list so the loop is seamless */}
           <div
@@ -872,7 +937,7 @@ export default function HomePage() {
       {/* ══════════════════════ STATS BAR ══════════════════════ */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+          <Reveal className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
             {[
               { value: 150, suffix: "+", label: t("stats.rugsCreated"),     accent: BRAND.blue,  icon: Sparkles },
               { value: 50,  suffix: "+", label: t("stats.happyClients"),    accent: BRAND.deep,  icon: Heart },
@@ -908,20 +973,20 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* ══════════════════════ FEATURES (BENTO) ══════════════════════ */}
       <section className="container mx-auto px-4 py-20 md:py-24">
-        <div className="mb-12 md:mb-16 max-w-2xl">
+        <Reveal className="mb-12 md:mb-16 max-w-2xl">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
             {t("features.title")}
           </h2>
           <p className="text-lg text-slate-600 leading-relaxed">
             {t("features.subtitle")}
           </p>
-        </div>
+        </Reveal>
 
         {/* Bento grid: 4-col / 2-row. Asymmetric, varied visual treatments per cell */}
         <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 md:gap-5 auto-rows-fr">
@@ -1055,10 +1120,10 @@ export default function HomePage() {
       {/* ══════════════════════ REVIEWS ══════════════════════ */}
       <section className="py-20 md:py-28" style={{ backgroundColor: "#f8faff" }}>
         <div className="container mx-auto px-4">
-          <div className="mb-14">
+          <Reveal className="mb-14">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("reviews.title")}</h2>
             <p className="text-muted-foreground max-w-xl">{t("reviews.subtitle")}</p>
-          </div>
+          </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
             {[1, 2, 3].map((i) => (
@@ -1122,7 +1187,7 @@ export default function HomePage() {
 
       {/* ══════════════════════ CTA FINAL ══════════════════════ */}
       <section style={{ background: `linear-gradient(135deg, ${BRAND.tint}40 0%, white 50%, ${BRAND.tint}30 100%)` }}>
-        <div className="container mx-auto px-4 py-20 text-center">
+        <Reveal className="container mx-auto px-4 py-20 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("cta.title")}</h2>
           <p className="text-muted-foreground max-w-lg mx-auto mb-10">{t("cta.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -1143,7 +1208,7 @@ export default function HomePage() {
               {isEs ? "Contactar por WhatsApp" : "Contact on WhatsApp"}
             </a>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ══════════════════════ PROJECT LIGHTBOX ══════════════════════ */}
