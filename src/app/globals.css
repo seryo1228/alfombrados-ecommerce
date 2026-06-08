@@ -97,6 +97,17 @@
   will-change: transform;
 }
 
+/* Weaving stripe — tufting loops slowly threading along the navbar */
+@keyframes weave-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.weave-track {
+  animation: weave-x 28s linear infinite;
+  will-change: transform;
+}
+
 .marquee-mask {
   -webkit-mask-image: linear-gradient(
     to right,
@@ -125,7 +136,8 @@
     opacity: 1;
     transform: none;
   }
-  .marquee-track {
+  .marquee-track,
+  .weave-track {
     animation: none;
   }
 }
