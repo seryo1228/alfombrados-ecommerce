@@ -20,8 +20,13 @@ import {
   MessageCircle,
   Video,
   X,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Instagram,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { publicApi } from "@/lib/api";
 
 /* ─── Brand colors ─────────────────────────────────────────── */
@@ -92,6 +97,174 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
     <span id={`counter-${target}`} className="tabular-nums">
       {count}{suffix}
     </span>
+  );
+}
+
+/* ─── Workshop videos ───────────────────────────────────────── */
+/*  Drop your Instagram-downloaded MP4s into  public/videos/
+    Suggested format: 720p or 1080p, H.264, under 8MB each.
+    Add the filenames here; the component handles the rest.        */
+const WORKSHOP_VIDEOS: { src: string; poster?: string }[] = [
+  // { src: "/videos/workshop-1.mp4", poster: "/videos/workshop-1.jpg" },
+  // { src: "/videos/workshop-2.mp4", poster: "/videos/workshop-2.jpg" },
+  // { src: "/videos/workshop-3.mp4", poster: "/videos/workshop-3.jpg" },
+];
+
+function WorkshopVideos({ isEs }: { isEs: boolean }) {
+  const [index, setIndex] = useState(0);
+  const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(true);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const hasVideos = WORKSHOP_VIDEOS.length > 0;
+
+  // Try to play whenever the active video changes
+  useEffect(() => {
+    if (!hasVideos) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = muted;
+    if (playing) {
+      v.play().catch(() => {/* autoplay blocked — user will tap */});
+    } else {
+      v.pause();
+    }
+  }, [index, muted, playing, hasVideos]);
+
+  const next = () => setIndex((i) => (i + 1) % WORKSHOP_VIDEOS.length);
+
+  /* ─── Empty state: no videos uploaded yet ─── */
+  if (!hasVideos) {
+    return (
+      <div
+        className="aspect-[4/3] rounded-2xl overflow-hidden relative flex items-end"
+        style={{ backgroundColor: BRAND.deep }}
+      >
+        <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="rug-about" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <circle cx="20" cy="20" r="8" fill="white"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#rug-about)"/>
+        </svg>
+        {/* Centered Instagram CTA */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <a
+            href="https://instagram.com/alfombra2_ve"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex flex-col items-center gap-3 text-white text-center px-6"
+          >
+            <div className="h-16 w-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+              <Instagram className="h-7 w-7" />
+            </div>
+            <div>
+              <p className="font-semibold">
+                {isEs ? "Mira el taller en Instagram" : "See the workshop on Instagram"}
+              </p>
+              <p className="text-sm opacity-75">@alfombra2_ve</p>
+            </div>
+          </a>
+        </div>
+        {/* Location footer */}
+        <div className="relative z-10 w-full">
+          <div className="flex h-1">
+            {[BRAND.tint, "#ffffff", BRAND.sky, BRAND.blue, BRAND.tint, "#ffffff", BRAND.sky].map((c, i) => (
+              <div key={i} className="flex-1" style={{ backgroundColor: c }} />
+            ))}
+          </div>
+          <div className="bg-black/30 backdrop-blur-sm px-5 py-4 text-white">
+            <p className="text-xs font-medium opacity-70 uppercase tracking-wider mb-0.5">
+              {isEs ? "Nuestro Taller" : "Our Workshop"}
+            </p>
+            <p className="text-sm font-semibold">San Antonio de los Altos, Venezuela</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ─── Video player ─── */
+  const current = WORKSHOP_VIDEOS[index];
+  return (
+    <div className="aspect-[4/3] rounded-2xl overflow-hidden relative bg-black group">
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+      <video
+        ref={videoRef}
+        key={current.src}
+        src={current.src}
+        poster={current.poster}
+        autoPlay
+        muted={muted}
+        playsInline
+        onEnded={next}
+        onClick={() => setPlaying((p) => !p)}
+        className="absolute inset-0 w-full h-full object-cover cursor-pointer"
+      />
+
+      {/* Top-right controls */}
+      <div className="absolute top-3 right-3 z-10 flex gap-2">
+        <button
+          type="button"
+          onClick={() => setMuted((m) => !m)}
+          aria-label={muted ? (isEs ? "Activar sonido" : "Unmute") : (isEs ? "Silenciar" : "Mute")}
+          className="h-9 w-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center transition-colors"
+        >
+          {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+        </button>
+        <button
+          type="button"
+          onClick={() => setPlaying((p) => !p)}
+          aria-label={playing ? (isEs ? "Pausar" : "Pause") : (isEs ? "Reproducir" : "Play")}
+          className="h-9 w-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center transition-colors"
+        >
+          {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 translate-x-px" />}
+        </button>
+      </div>
+
+      {/* Bottom-left Instagram link */}
+      <a
+        href="https://instagram.com/alfombra2_ve"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white text-xs font-medium transition-colors"
+      >
+        <Instagram className="h-3.5 w-3.5" />
+        @alfombra2_ve
+      </a>
+
+      {/* Indicators (one dot per video) */}
+      {WORKSHOP_VIDEOS.length > 1 && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
+          {WORKSHOP_VIDEOS.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={isEs ? `Video ${i + 1}` : `Video ${i + 1}`}
+              className={`h-1.5 rounded-full transition-all ${
+                i === index ? "w-6 bg-white" : "w-1.5 bg-white/50 hover:bg-white/75"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Location footer overlay */}
+      <div className="absolute bottom-0 left-0 right-0 z-10">
+        <div className="flex h-1">
+          {[BRAND.tint, "#ffffff", BRAND.sky, BRAND.blue, BRAND.tint, "#ffffff", BRAND.sky].map((c, i) => (
+            <div key={i} className="flex-1" style={{ backgroundColor: c }} />
+          ))}
+        </div>
+        <div className="bg-gradient-to-t from-black/80 via-black/50 to-transparent px-5 py-4 text-white">
+          <p className="text-xs font-medium opacity-80 uppercase tracking-wider mb-0.5">
+            {isEs ? "Nuestro Taller" : "Our Workshop"}
+          </p>
+          <p className="text-sm font-semibold">San Antonio de los Altos, Venezuela</p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -368,36 +541,9 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-            {/* Left: visual */}
+            {/* Left: workshop videos */}
             <div className="relative">
-              <div
-                className="aspect-[4/3] rounded-2xl overflow-hidden relative flex items-end"
-                style={{ backgroundColor: BRAND.deep }}
-              >
-                {/* Rug pattern art — placeholder until real photo */}
-                <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="rug-about" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <circle cx="20" cy="20" r="8" fill="white"/>
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#rug-about)"/>
-                </svg>
-                {/* Color band at bottom representing yarn diversity */}
-                <div className="relative z-10 w-full">
-                  <div className="flex h-1">
-                    {[BRAND.tint, "#ffffff", BRAND.sky, BRAND.blue, BRAND.tint, "#ffffff", BRAND.sky].map((c, i) => (
-                      <div key={i} className="flex-1" style={{ backgroundColor: c }} />
-                    ))}
-                  </div>
-                  <div className="bg-black/30 backdrop-blur-sm px-5 py-4 text-white">
-                    <p className="text-xs font-medium opacity-70 uppercase tracking-wider mb-0.5">
-                      {isEs ? "Nuestro Taller" : "Our Workshop"}
-                    </p>
-                    <p className="text-sm font-semibold">San Antonio de los Altos, Venezuela</p>
-                  </div>
-                </div>
-              </div>
+              <WorkshopVideos isEs={isEs} />
 
               {/* Floating stat card */}
               <div className="absolute -bottom-6 -right-4 md:-right-6 bg-white border rounded-xl p-4 shadow-lg max-w-[200px]">
