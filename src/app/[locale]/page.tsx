@@ -19,6 +19,7 @@ import {
   Hand,
   MessageCircle,
   Video,
+  X,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { publicApi } from "@/lib/api";
@@ -104,11 +105,33 @@ interface PortfolioImage {
 /* ════════════════════════════════════════════════════════════ */
 /*  Home Page                                                   */
 /* ════════════════════════════════════════════════════════════ */
+interface PortfolioItem {
+  id: number;
+  image: string | null;
+  gradient: string;
+  dims: string;
+  label: string;
+}
+
 export default function HomePage() {
   const t  = useTranslations("home");
   const locale = useLocale();
   const isEs = locale === "es";
   const [erpPortfolio, setErpPortfolio] = useState<PortfolioImage[]>([]);
+  const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
+
+  // Lock body scroll + ESC to close while lightbox is open
+  useEffect(() => {
+    if (!selectedItem) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setSelectedItem(null); };
+    window.addEventListener("keydown", onKey);
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = original;
+    };
+  }, [selectedItem]);
 
   useEffect(() => {
     publicApi.getConfig().then((config) => {
@@ -266,11 +289,13 @@ export default function HomePage() {
           >
             <div className="marquee-track flex gap-6 w-max">
               {[...portfolioItems, ...portfolioItems].map((item, idx) => (
-                <Link
-                  href="/gallery"
+                <button
+                  type="button"
+                  onClick={() => setSelectedItem(item)}
                   key={`${item.id}-${idx}`}
                   aria-hidden={idx >= portfolioItems.length ? "true" : undefined}
-                  className="block w-[280px] sm:w-[320px] lg:w-[360px] shrink-0"
+                  aria-label={isEs ? `Ver proyecto: ${item.label}` : `View project: ${item.label}`}
+                  className="block w-[280px] sm:w-[320px] lg:w-[360px] shrink-0 text-left p-0 border-0 bg-transparent"
                 >
                   <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer">
                     <CardContent className="p-0">
@@ -322,7 +347,7 @@ export default function HomePage() {
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
+                </button>
               ))}
             </div>
           </div>
@@ -619,6 +644,97 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ══════════════════════ PROJECT LIGHTBOX ══════════════════════ */}
+      {selectedItem && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in-up"
+          onClick={() => setSelectedItem(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedItem.label}
+        >
+          <button
+            type="button"
+            onClick={() => setSelectedItem(null)}
+            aria-label={isEs ? "Cerrar" : "Close"}
+            className="absolute top-4 right-4 md:top-6 md:right-6 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full w-11 h-11 flex items-center justify-center transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
+          <div
+            className="relative w-full max-w-5xl max-h-[90vh] flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {selectedItem.image ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={selectedItem.image}
+                alt={selectedItem.label}
+                className="max-w-full max-h-[78vh] object-contain rounded-xl shadow-2xl"
+              />
+            ) : (
+              /* Placeholder when no real image yet — large gradient with label */
+              <div className={`w-full max-w-2xl aspect-square rounded-xl shadow-2xl bg-gradient-to-br ${selectedItem.gradient} relative overflow-hidden flex items-center justify-center`}>
+                <div className="absolute inset-0 opacity-20">
+                  <svg className="w-full h-full" viewBox="0 0 200 200">
+                    <defs>
+                      <pattern id="lightbox-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <circle cx="20" cy="20" r="8" fill="white" fillOpacity="0.3" />
+                      </pattern>
+                    </defs>
+                    <rect width="200" height="200" fill="url(#lightbox-pattern)" />
+                  </svg>
+                </div>
+                <span className="text-white/80 text-2xl font-semibold relative z-10">{selectedItem.label}</span>
+              </div>
+            )}
+
+            {/* Info bar below image */}
+            <div className="mt-5 w-full max-w-3xl bg-white/95 backdrop-blur rounded-xl px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-lg leading-tight">
+                  {selectedItem.id >= 1000
+                    ? selectedItem.label
+                    : t(`portfolio.items.item${selectedItem.id}.title`)}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {selectedItem.id >= 1000
+                    ? (selectedItem.dims || "")
+                    : t(`portfolio.items.item${selectedItem.id}.description`)}
+                </p>
+                {selectedItem.dims && selectedItem.id < 1000 && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {isEs ? "Dimensiones" : "Dimensions"}: <strong>{selectedItem.dims}</strong>
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <Button asChild variant="outline">
+                  <Link href="/gallery" onClick={() => setSelectedItem(null)}>
+                    {isEs ? "Ver toda la galería" : "Browse gallery"}
+                  </Link>
+                </Button>
+                <a
+                  href={`https://wa.me/584120993377?text=${encodeURIComponent(
+                    isEs
+                      ? `Hola! Me interesa una alfombra como "${selectedItem.label}". ¿Pueden darme más información?`
+                      : `Hi! I'm interested in a rug like "${selectedItem.label}". Can you tell me more?`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium text-sm transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: BRAND.wa }}
+                >
+                  <WhatsAppIcon className="h-4 w-4" />
+                  {isEs ? "Cotizar" : "Get quote"}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
