@@ -24,8 +24,27 @@ import {
   Pause,
   Volume2,
   VolumeX,
-  Instagram,
 } from "lucide-react";
+
+/* Inline Instagram icon — lucide-react v1 doesn't export it */
+function Instagram({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
 import { useState, useEffect, useRef } from "react";
 import { publicApi } from "@/lib/api";
 
@@ -100,15 +119,151 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
   );
 }
 
-/* ─── Workshop videos ───────────────────────────────────────── */
-/*  Drop your Instagram-downloaded MP4s into  public/videos/
-    Suggested format: 720p or 1080p, H.264, under 8MB each.
-    Add the filenames here; the component handles the rest.        */
-const WORKSHOP_VIDEOS: { src: string; poster?: string }[] = [
-  // { src: "/videos/workshop-1.mp4", poster: "/videos/workshop-1.jpg" },
-  // { src: "/videos/workshop-2.mp4", poster: "/videos/workshop-2.jpg" },
-  // { src: "/videos/workshop-3.mp4", poster: "/videos/workshop-3.jpg" },
+/* ─── Workshop videos ───────────────────────────────────────────────
+   Soporta CUATRO fuentes mezcladas en la misma lista:
+
+   1) Local MP4         { src: "/videos/workshop-1.mp4" }
+   2) YouTube Short     { src: "https://www.youtube.com/shorts/VIDEO_ID" }
+   3) Instagram Reel    { src: "https://www.instagram.com/reel/SHORTCODE/" }
+   4) TikTok            { src: "https://www.tiktok.com/@user/video/VIDEO_ID" }
+
+   Recomendación: YouTube Shorts da el embed más limpio (sin chrome de marca).
+   ─────────────────────────────────────────────────────────────────── */
+type VideoSource = { src: string; poster?: string };
+const WORKSHOP_VIDEOS: VideoSource[] = [
+  // { src: "/videos/workshop-1.mp4" },
+  // { src: "https://www.youtube.com/shorts/VIDEO_ID" },
+  // { src: "https://www.instagram.com/reel/SHORTCODE/" },
 ];
+
+/* ─── URL detection helpers ─── */
+type VideoKind = "local" | "youtube" | "instagram" | "tiktok";
+
+function detectKind(url: string): VideoKind {
+  if (/youtube\.com|youtu\.be/i.test(url)) return "youtube";
+  if (/instagram\.com/i.test(url)) return "instagram";
+  if (/tiktok\.com/i.test(url)) return "tiktok";
+  return "local";
+}
+
+function extractYouTubeId(url: string): string | null {
+  // matches: /shorts/ID, /watch?v=ID, /embed/ID, youtu.be/ID
+  const patterns = [
+    /youtube\.com\/shorts\/([\w-]+)/i,
+    /youtube\.com\/watch\?v=([\w-]+)/i,
+    /youtube\.com\/embed\/([\w-]+)/i,
+    /youtu\.be\/([\w-]+)/i,
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+function extractInstagramShortcode(url: string): string | null {
+  const m = url.match(/instagram\.com\/(?:reel|p|tv)\/([\w-]+)/i);
+  return m ? m[1] : null;
+}
+
+function extractTikTokId(url: string): string | null {
+  const m = url.match(/tiktok\.com\/[^/]+\/video\/(\d+)/i);
+  return m ? m[1] : null;
+}
+
+/* ─── Single-video renderer (handles all 4 sources) ─── */
+function VideoPlayer({
+  source,
+  muted,
+  playing,
+  videoRef,
+  onEnded,
+  onClick,
+}: {
+  source: VideoSource;
+  muted: boolean;
+  playing: boolean;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  onEnded: () => void;
+  onClick: () => void;
+}) {
+  const kind = detectKind(source.src);
+
+  if (kind === "youtube") {
+    const id = extractYouTubeId(source.src);
+    if (!id) return null;
+    // autoplay=1 + mute=1 needed for browser autoplay policy
+    // loop=1 needs playlist=ID for single-video loop
+    const params = new URLSearchParams({
+      autoplay: playing ? "1" : "0",
+      mute: muted ? "1" : "0",
+      loop: "1",
+      playlist: id,
+      controls: "0",
+      modestbranding: "1",
+      rel: "0",
+      playsinline: "1",
+    });
+    return (
+      <iframe
+        key={source.src}
+        src={`https://www.youtube.com/embed/${id}?${params.toString()}`}
+        title="Workshop video"
+        className="absolute inset-0 w-full h-full"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowFullScreen
+      />
+    );
+  }
+
+  if (kind === "instagram") {
+    const code = extractInstagramShortcode(source.src);
+    if (!code) return null;
+    return (
+      <iframe
+        key={source.src}
+        src={`https://www.instagram.com/p/${code}/embed/`}
+        title="Workshop reel"
+        className="absolute inset-0 w-full h-full"
+        scrolling="no"
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+      />
+    );
+  }
+
+  if (kind === "tiktok") {
+    const id = extractTikTokId(source.src);
+    if (!id) return null;
+    return (
+      <iframe
+        key={source.src}
+        src={`https://www.tiktok.com/embed/v2/${id}`}
+        title="Workshop tiktok"
+        className="absolute inset-0 w-full h-full"
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+      />
+    );
+  }
+
+  // local mp4
+  return (
+    /* eslint-disable-next-line jsx-a11y/media-has-caption */
+    <video
+      ref={videoRef}
+      key={source.src}
+      src={source.src}
+      poster={source.poster}
+      autoPlay
+      muted={muted}
+      playsInline
+      onEnded={onEnded}
+      onClick={onClick}
+      className="absolute inset-0 w-full h-full object-cover cursor-pointer"
+    />
+  );
+}
 
 function WorkshopVideos({ isEs }: { isEs: boolean }) {
   const [index, setIndex] = useState(0);
@@ -116,23 +271,33 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
   const [playing, setPlaying] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hasVideos = WORKSHOP_VIDEOS.length > 0;
+  const current = hasVideos ? WORKSHOP_VIDEOS[index] : null;
+  const currentKind = current ? detectKind(current.src) : "local";
+  const isIframe = currentKind !== "local";
 
-  // Try to play whenever the active video changes
+  // Drive local <video> playback
   useEffect(() => {
-    if (!hasVideos) return;
+    if (!hasVideos || isIframe) return;
     const v = videoRef.current;
     if (!v) return;
     v.muted = muted;
-    if (playing) {
-      v.play().catch(() => {/* autoplay blocked — user will tap */});
-    } else {
-      v.pause();
-    }
-  }, [index, muted, playing, hasVideos]);
+    if (playing) v.play().catch(() => {/* autoplay blocked */});
+    else v.pause();
+  }, [index, muted, playing, hasVideos, isIframe]);
+
+  // For iframes (YouTube/IG/TikTok), auto-rotate on a timer since we can't
+  // detect end of playback across origins
+  useEffect(() => {
+    if (!hasVideos || !isIframe || WORKSHOP_VIDEOS.length < 2 || !playing) return;
+    const t = setTimeout(() => {
+      setIndex((i) => (i + 1) % WORKSHOP_VIDEOS.length);
+    }, 25000);
+    return () => clearTimeout(t);
+  }, [index, isIframe, hasVideos, playing]);
 
   const next = () => setIndex((i) => (i + 1) % WORKSHOP_VIDEOS.length);
 
-  /* ─── Empty state: no videos uploaded yet ─── */
+  /* ─── Empty state ─── */
   if (!hasVideos) {
     return (
       <div
@@ -147,7 +312,6 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
           </defs>
           <rect width="100%" height="100%" fill="url(#rug-about)"/>
         </svg>
-        {/* Centered Instagram CTA */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <a
             href="https://instagram.com/alfombra2_ve"
@@ -166,7 +330,6 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
             </div>
           </a>
         </div>
-        {/* Location footer */}
         <div className="relative z-10 w-full">
           <div className="flex h-1">
             {[BRAND.tint, "#ffffff", BRAND.sky, BRAND.blue, BRAND.tint, "#ffffff", BRAND.sky].map((c, i) => (
@@ -184,45 +347,43 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
     );
   }
 
-  /* ─── Video player ─── */
-  const current = WORKSHOP_VIDEOS[index];
+  /* ─── Active player ─── */
   return (
     <div className="aspect-[4/3] rounded-2xl overflow-hidden relative bg-black group">
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <video
-        ref={videoRef}
-        key={current.src}
-        src={current.src}
-        poster={current.poster}
-        autoPlay
+      <VideoPlayer
+        source={current!}
         muted={muted}
-        playsInline
+        playing={playing}
+        videoRef={videoRef}
         onEnded={next}
         onClick={() => setPlaying((p) => !p)}
-        className="absolute inset-0 w-full h-full object-cover cursor-pointer"
       />
 
-      {/* Top-right controls */}
-      <div className="absolute top-3 right-3 z-10 flex gap-2">
-        <button
-          type="button"
-          onClick={() => setMuted((m) => !m)}
-          aria-label={muted ? (isEs ? "Activar sonido" : "Unmute") : (isEs ? "Silenciar" : "Mute")}
-          className="h-9 w-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center transition-colors"
-        >
-          {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-        </button>
-        <button
-          type="button"
-          onClick={() => setPlaying((p) => !p)}
-          aria-label={playing ? (isEs ? "Pausar" : "Pause") : (isEs ? "Reproducir" : "Play")}
-          className="h-9 w-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center transition-colors"
-        >
-          {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 translate-x-px" />}
-        </button>
-      </div>
+      {/* Controls: only meaningful for local <video> (we can't control iframes
+          from a different origin). The iframe player has its own controls
+          inside, so we just show the mute toggle when local. */}
+      {!isIframe && (
+        <div className="absolute top-3 right-3 z-10 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setMuted((m) => !m)}
+            aria-label={muted ? (isEs ? "Activar sonido" : "Unmute") : (isEs ? "Silenciar" : "Mute")}
+            className="h-9 w-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center transition-colors"
+          >
+            {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPlaying((p) => !p)}
+            aria-label={playing ? (isEs ? "Pausar" : "Pause") : (isEs ? "Reproducir" : "Play")}
+            className="h-9 w-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md text-white flex items-center justify-center transition-colors"
+          >
+            {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 translate-x-px" />}
+          </button>
+        </div>
+      )}
 
-      {/* Bottom-left Instagram link */}
+      {/* Instagram link (always visible) */}
       <a
         href="https://instagram.com/alfombra2_ve"
         target="_blank"
@@ -233,7 +394,7 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
         @alfombra2_ve
       </a>
 
-      {/* Indicators (one dot per video) */}
+      {/* Indicators */}
       {WORKSHOP_VIDEOS.length > 1 && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
           {WORKSHOP_VIDEOS.map((_, i) => (
@@ -241,7 +402,7 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
               key={i}
               type="button"
               onClick={() => setIndex(i)}
-              aria-label={isEs ? `Video ${i + 1}` : `Video ${i + 1}`}
+              aria-label={`Video ${i + 1}`}
               className={`h-1.5 rounded-full transition-all ${
                 i === index ? "w-6 bg-white" : "w-1.5 bg-white/50 hover:bg-white/75"
               }`}
@@ -250,8 +411,8 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
         </div>
       )}
 
-      {/* Location footer overlay */}
-      <div className="absolute bottom-0 left-0 right-0 z-10">
+      {/* Footer */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
         <div className="flex h-1">
           {[BRAND.tint, "#ffffff", BRAND.sky, BRAND.blue, BRAND.tint, "#ffffff", BRAND.sky].map((c, i) => (
             <div key={i} className="flex-1" style={{ backgroundColor: c }} />
