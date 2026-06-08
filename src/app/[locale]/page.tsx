@@ -22,6 +22,10 @@ import {
   Star,
   Quote,
   ChevronRight,
+  Globe,
+  Hand,
+  MessageCircle,
+  Video,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { publicApi } from "@/lib/api";
@@ -215,6 +219,37 @@ export default function HomePage() {
                 </Link>
               </Button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════ TRUST STRIP ══════════════════════ */}
+      <section className="border-y" style={{ backgroundColor: BRAND.tint + "40" }}>
+        <div className="container mx-auto px-4 py-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { icon: Globe,         label: isEs ? "Envíos a todo el mundo" : "Worldwide shipping",          sub: isEs ? "Venezuela y exterior"   : "Venezuela & international" },
+              { icon: Hand,          label: isEs ? "100% hecho a mano"      : "100% handmade",               sub: isEs ? "Cada alfombra es única" : "Every rug is one of a kind" },
+              { icon: Video,         label: isEs ? "Cursos presenciales y digitales" : "In-person & digital courses", sub: isEs ? "Aprende a tu ritmo"     : "Learn at your pace" },
+              { icon: MessageCircle, label: isEs ? "Soporte por WhatsApp"   : "WhatsApp support",            sub: isEs ? "Respuesta rápida"       : "Quick response" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div
+                  className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "white", color: BRAND.blue }}
+                >
+                  <item.icon className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold leading-tight truncate" style={{ color: BRAND.deep }}>
+                    {item.label}
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-tight mt-0.5 truncate">
+                    {item.sub}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -540,16 +575,19 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { title: t("categories.rugs"),    href: "/designer",              icon: "🎨", bg: "from-rose-500/10 to-orange-500/10" },
-              { title: t("categories.yarn"),    href: "/products?category=estambre", icon: "🧶", bg: "from-sky-500/10 to-blue-500/10" },
-              { title: t("categories.tools"),   href: "/products?category=pistola",  icon: "🔧", bg: "from-blue-500/10 to-indigo-500/10" },
-              { title: t("categories.courses"), href: "/courses",               icon: "📚", bg: "from-emerald-500/10 to-teal-500/10" },
+              { title: t("categories.rugs"),    href: "/designer",              icon: "🎨", bg: "from-rose-500/10 to-orange-500/10",       subtitle: "" },
+              { title: t("categories.yarn"),    href: "/products?category=estambre", icon: "🧶", bg: "from-sky-500/10 to-blue-500/10",     subtitle: "" },
+              { title: t("categories.tools"),   href: "/products?category=pistola",  icon: "🔧", bg: "from-blue-500/10 to-indigo-500/10",  subtitle: "" },
+              { title: t("categories.courses"), href: "/courses",               icon: "📚", bg: "from-emerald-500/10 to-teal-500/10",     subtitle: isEs ? "Presenciales + Digitales" : "In-person + Digital" },
             ].map((cat, i) => (
               <Link href={cat.href} key={i}>
-                <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden">
-                  <CardContent className={`p-6 bg-gradient-to-br ${cat.bg}`}>
+                <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full">
+                  <CardContent className={`p-6 bg-gradient-to-br ${cat.bg} h-full`}>
                     <div className="text-4xl mb-3">{cat.icon}</div>
                     <h3 className="font-semibold">{cat.title}</h3>
+                    {cat.subtitle && (
+                      <p className="text-xs text-muted-foreground mt-1">{cat.subtitle}</p>
+                    )}
                   </CardContent>
                 </Card>
               </Link>

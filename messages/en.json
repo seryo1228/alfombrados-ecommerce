@@ -63,7 +63,7 @@
       },
       "courses": {
         "title": "Learn Tufting",
-        "description": "Join our in-person and online courses to create your own rugs"
+        "description": "In-person courses in San Antonio de los Altos and digital courses you can take from anywhere"
       }
     },
     "reviews": {
@@ -189,7 +189,37 @@
     "spots": "{count} spots available",
     "full": "Course Full",
     "calendar": "Calendar View",
-    "list": "List View"
+    "list": "List View",
+    "heroBadge": "Learn Tufting",
+    "heroTitle": "Turn yarn into art",
+    "heroSubtitle": "From your first stitch to your first finished rug. In-person courses in San Antonio de los Altos and digital courses you can take from anywhere in the world.",
+    "tabs": {
+      "all": "All courses",
+      "inPerson": "In Person",
+      "digital": "Digital"
+    },
+    "inPersonSection": {
+      "title": "In-Person Courses",
+      "description": "Learn with instructors at our workshop in San Antonio de los Altos. Includes materials, professional tools, and refreshments.",
+      "benefit1": "Live instructor",
+      "benefit2": "Materials included",
+      "benefit3": "Hands-on with real equipment"
+    },
+    "digitalSection": {
+      "title": "Digital Courses",
+      "description": "Learn at your own pace from wherever you are. High-quality video lessons, WhatsApp support, and lifetime access to the content.",
+      "benefit1": "Lifetime access",
+      "benefit2": "Learn at your pace",
+      "benefit3": "WhatsApp support",
+      "newBadge": "New",
+      "comingSoon": "Coming soon",
+      "comingSoonDesc": "We're preparing the first digital courses. Leave us your WhatsApp and you'll be the first to know when they're ready.",
+      "notifyMe": "Notify me on WhatsApp"
+    },
+    "emptyState": {
+      "noUpcoming": "No upcoming courses in this format",
+      "checkBack": "Check back soon or contact us on WhatsApp"
+    }
   },
   "cart": {
     "title": "Shopping Cart",

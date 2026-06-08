@@ -63,7 +63,7 @@
       },
       "courses": {
         "title": "Aprende Tufting",
-        "description": "Únete a nuestros cursos presenciales y online para crear tus propias alfombras"
+        "description": "Cursos presenciales en San Antonio de los Altos y cursos digitales para aprender desde cualquier lugar"
       }
     },
     "reviews": {
@@ -189,7 +189,37 @@
     "spots": "{count} cupos disponibles",
     "full": "Curso Lleno",
     "calendar": "Vista Calendario",
-    "list": "Vista Lista"
+    "list": "Vista Lista",
+    "heroBadge": "Aprende Tufting",
+    "heroTitle": "Convierte la lana en arte",
+    "heroSubtitle": "Desde tu primer punto hasta tu primera alfombra terminada. Cursos presenciales en San Antonio de los Altos y cursos digitales para aprender desde cualquier parte del mundo.",
+    "tabs": {
+      "all": "Todos los cursos",
+      "inPerson": "Presenciales",
+      "digital": "Digitales"
+    },
+    "inPersonSection": {
+      "title": "Cursos Presenciales",
+      "description": "Aprende con instructores en nuestro taller en San Antonio de los Altos. Incluye materiales, herramientas profesionales y refrigerio.",
+      "benefit1": "Instructor en vivo",
+      "benefit2": "Materiales incluidos",
+      "benefit3": "Práctica con equipos reales"
+    },
+    "digitalSection": {
+      "title": "Cursos Digitales",
+      "description": "Aprende a tu ritmo desde donde estés. Videos en alta calidad, soporte por WhatsApp y acceso de por vida al contenido.",
+      "benefit1": "Acceso de por vida",
+      "benefit2": "Aprende a tu ritmo",
+      "benefit3": "Soporte por WhatsApp",
+      "newBadge": "Nuevo",
+      "comingSoon": "Pronto disponible",
+      "comingSoonDesc": "Estamos preparando los primeros cursos digitales. Déjanos tu WhatsApp y serás el primero en saber cuando estén listos.",
+      "notifyMe": "Avísame por WhatsApp"
+    },
+    "emptyState": {
+      "noUpcoming": "No hay cursos próximos en este formato",
+      "checkBack": "Vuelve pronto o contáctanos por WhatsApp"
+    }
   },
   "cart": {
     "title": "Carrito de Compras",
