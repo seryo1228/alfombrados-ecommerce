@@ -492,82 +492,193 @@ export default function HomePage() {
     <div className="flex flex-col">
 
       {/* ══════════════════════════ HERO ══════════════════════════ */}
-      <section className="relative overflow-hidden bg-white min-h-[640px] md:min-h-[700px] flex items-center">
-
-        {/* Blue right panel — desktop only */}
+      <section className="relative overflow-hidden bg-white">
+        {/* Soft brand-color blobs for depth */}
         <div
-          className="hidden md:block absolute inset-y-0 right-0 w-5/12 overflow-hidden"
-          style={{ backgroundColor: BRAND.blue }}
+          className="absolute -top-32 -right-32 w-[420px] h-[420px] rounded-full opacity-25 blur-3xl pointer-events-none"
+          style={{ backgroundColor: BRAND.tint }}
           aria-hidden="true"
-        >
-          {/* Tufting dot pattern — represents rug loops */}
-          <svg className="absolute inset-0 w-full h-full opacity-[0.12]" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="tuft" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
-                <circle cx="15" cy="15" r="6" fill="white"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#tuft)"/>
-          </svg>
-          {/* Soft left fade so text area stays clean */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-transparent" style={{width: '30%'}} />
-          {/* Brand color stripe at bottom */}
-          <div className="absolute bottom-0 left-0 right-0 flex h-1.5" style={{opacity: 0.8}}>
-            {[BRAND.tint, "#ffffff", BRAND.sky, BRAND.tint, "#ffffff"].map((c, i) => (
-              <div key={i} className="flex-1" style={{ backgroundColor: c }} />
-            ))}
-          </div>
-        </div>
+        />
+        <div
+          className="absolute -bottom-40 -left-40 w-[460px] h-[460px] rounded-full opacity-20 blur-3xl pointer-events-none"
+          style={{ backgroundColor: BRAND.sky }}
+          aria-hidden="true"
+        />
 
         {/* Mobile top brand stripe */}
-        <div className="md:hidden absolute top-0 left-0 right-0 flex h-1" aria-hidden="true">
+        <div className="md:hidden absolute top-0 left-0 right-0 flex h-1 z-10" aria-hidden="true">
           {[BRAND.tint, BRAND.blue, BRAND.sky, BRAND.deep, BRAND.tint].map((c, i) => (
             <div key={i} className="flex-1" style={{ backgroundColor: c }} />
           ))}
         </div>
 
-        <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
-          <div className="max-w-xl animate-fade-in-up">
-            {/* Location label — not a badge pill */}
-            <p className="text-sm font-semibold tracking-wide mb-5 flex items-center gap-2" style={{ color: BRAND.blue }}>
-              <Heart className="h-3.5 w-3.5" />
-              {isEs ? "Proyecto Social · San Antonio de los Altos, Venezuela" : "Social Project · San Antonio de los Altos, Venezuela"}
-            </p>
+        <div className="container mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-            <h1 className="text-4xl md:text-[3.25rem] font-bold font-headline mb-6 leading-[1.1] tracking-tight text-wrap-balance">
-              {t("hero.title")}
-            </h1>
-
-            <p className="text-lg text-slate-600 mb-10 leading-relaxed max-w-lg">
-              {t("hero.subtitle")}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              {/* Primary CTA: WhatsApp */}
-              <a
-                href="https://wa.me/584120993377"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-base transition-all hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0"
-                style={{ backgroundColor: BRAND.wa }}
+            {/* ─── Left column: text ─── */}
+            <div className="lg:col-span-7 animate-fade-in-up">
+              {/* Location pill */}
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide mb-6"
+                style={{ backgroundColor: BRAND.tint + "80", color: BRAND.deep }}
               >
-                <WhatsAppIcon className="h-5 w-5" />
-                {isEs ? "Cotizar por WhatsApp" : "Quote on WhatsApp"}
-              </a>
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping" style={{ backgroundColor: BRAND.blue }} />
+                  <span className="relative inline-flex h-2 w-2 rounded-full" style={{ backgroundColor: BRAND.blue }} />
+                </span>
+                {isEs ? "Proyecto social · San Antonio de los Altos, Venezuela" : "Social project · San Antonio de los Altos, Venezuela"}
+              </div>
 
-              {/* Secondary CTA: Designer */}
-              <Button
-                size="lg"
-                variant="outline"
-                asChild
-                className="text-base font-semibold transition-all hover:-translate-y-0.5 active:translate-y-0"
-                style={{ borderColor: BRAND.blue, color: BRAND.blue }}
-              >
-                <Link href="/designer">
-                  <Palette className="mr-2 h-5 w-5" />
-                  {t("hero.cta")}
+              <h1 className="text-4xl sm:text-5xl lg:text-[3.75rem] xl:text-[4.25rem] font-bold font-headline mb-6 leading-[1.05] tracking-tight" style={{ textWrap: "balance" }}>
+                {t("hero.title")}
+              </h1>
+
+              <p className="text-lg text-slate-600 mb-10 leading-relaxed max-w-xl">
+                {t("hero.subtitle")}
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 mb-8">
+                <a
+                  href="https://wa.me/584120993377"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-base shadow-md transition-all hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+                  style={{ backgroundColor: BRAND.wa }}
+                >
+                  <WhatsAppIcon className="h-5 w-5" />
+                  {isEs ? "Cotizar por WhatsApp" : "Quote on WhatsApp"}
+                </a>
+
+                <Button
+                  size="lg"
+                  variant="outline"
+                  asChild
+                  className="text-base font-semibold h-[52px] transition-all hover:-translate-y-0.5 hover:shadow-md"
+                  style={{ borderColor: BRAND.blue, color: BRAND.blue, borderWidth: 2 }}
+                >
+                  <Link href="/designer">
+                    <Palette className="mr-2 h-5 w-5" />
+                    {t("hero.cta")}
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Trust micro-row */}
+              <div className="flex items-center gap-6 pt-6 border-t border-slate-200">
+                <div className="flex -space-x-2">
+                  {[BRAND.blue, BRAND.deep, BRAND.sky].map((c, i) => (
+                    <div
+                      key={i}
+                      className="h-8 w-8 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold text-white"
+                      style={{ backgroundColor: c }}
+                    >
+                      {["M", "C", "A"][i]}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <div className="flex items-center gap-0.5 mb-0.5">
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-600">
+                    <strong>50+</strong> {isEs ? "clientes felices alrededor del mundo" : "happy clients around the world"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ─── Right column: visual grid ─── */}
+            <div className="lg:col-span-5 relative">
+              <div className="grid grid-cols-2 gap-3 md:gap-4 relative">
+                {/* Card 1 — top left, square */}
+                <button
+                  type="button"
+                  onClick={() => portfolioItems[0] && setSelectedItem(portfolioItems[0])}
+                  aria-label={isEs ? "Ver proyecto" : "View project"}
+                  className="aspect-square rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 p-0"
+                  style={{ backgroundColor: portfolioItems[0]?.image ? undefined : BRAND.deep }}
+                >
+                  {portfolioItems[0]?.image ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={portfolioItems[0].image} alt={portfolioItems[0].label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  ) : (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${portfolioItems[0]?.gradient || "from-blue-400 to-blue-600"}`}>
+                      <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <pattern id="hero-p1" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <circle cx="10" cy="10" r="3" fill="white" />
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#hero-p1)" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+
+                {/* Card 2 — right, tall (spans 2 rows) */}
+                <button
+                  type="button"
+                  onClick={() => portfolioItems[1] && setSelectedItem(portfolioItems[1])}
+                  aria-label={isEs ? "Ver proyecto" : "View project"}
+                  className="row-span-2 rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 p-0"
+                  style={{ backgroundColor: portfolioItems[1]?.image ? undefined : BRAND.blue }}
+                >
+                  {portfolioItems[1]?.image ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={portfolioItems[1].image} alt={portfolioItems[1].label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  ) : (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${portfolioItems[1]?.gradient || "from-indigo-400 to-purple-600"}`}>
+                      <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <pattern id="hero-p2" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <circle cx="10" cy="10" r="3" fill="white" />
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#hero-p2)" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+
+                {/* Card 3 — bottom left, square */}
+                <button
+                  type="button"
+                  onClick={() => portfolioItems[2] && setSelectedItem(portfolioItems[2])}
+                  aria-label={isEs ? "Ver proyecto" : "View project"}
+                  className="aspect-square rounded-2xl overflow-hidden relative group shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 p-0"
+                  style={{ backgroundColor: portfolioItems[2]?.image ? undefined : BRAND.sky }}
+                >
+                  {portfolioItems[2]?.image ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={portfolioItems[2].image} alt={portfolioItems[2].label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  ) : (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${portfolioItems[2]?.gradient || "from-emerald-400 to-teal-600"}`}>
+                      <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <pattern id="hero-p3" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <circle cx="10" cy="10" r="3" fill="white" />
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#hero-p3)" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+
+                {/* Floating "view gallery" badge */}
+                <Link
+                  href="/gallery"
+                  className="absolute -bottom-3 -left-3 bg-white rounded-full pl-2 pr-4 py-2 shadow-lg flex items-center gap-2 text-xs font-semibold border hover:shadow-xl transition-shadow"
+                  style={{ borderColor: BRAND.tint, color: BRAND.deep }}
+                >
+                  <span className="h-7 w-7 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: BRAND.blue }}>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </span>
+                  {isEs ? "Ver galería completa" : "Browse full gallery"}
                 </Link>
-              </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -759,102 +870,185 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════ STATS BAR ══════════════════════ */}
-      <section className="border-y bg-white">
-        <div className="container mx-auto px-4 py-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
             {[
-              { value: 150, suffix: "+", label: t("stats.rugsCreated") },
-              { value: 50,  suffix: "+", label: t("stats.happyClients") },
-              { value: 12,  suffix: "",  label: t("stats.workshopsGiven") },
-              { value: 3,   suffix: "",  label: t("stats.yearsExperience") },
+              { value: 150, suffix: "+", label: t("stats.rugsCreated"),     accent: BRAND.blue,  icon: Sparkles },
+              { value: 50,  suffix: "+", label: t("stats.happyClients"),    accent: BRAND.deep,  icon: Heart },
+              { value: 12,  suffix: "",  label: t("stats.workshopsGiven"),  accent: BRAND.sky,   icon: GraduationCap },
+              { value: 3,   suffix: "",  label: t("stats.yearsExperience"), accent: BRAND.blue,  icon: Star },
             ].map((stat, i) => (
-              <div key={i} className="space-y-1">
-                <p className="text-3xl md:text-4xl font-bold" style={{ color: BRAND.blue }}>
-                  <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                </p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <div
+                key={i}
+                className="group relative rounded-2xl p-6 border border-slate-200/80 bg-white hover:shadow-lg hover:-translate-y-1 hover:border-transparent transition-all duration-300 overflow-hidden"
+              >
+                {/* Decorative dot in corner */}
+                <div
+                  className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-10 group-hover:opacity-20 group-hover:scale-125 transition-all duration-500"
+                  style={{ backgroundColor: stat.accent }}
+                  aria-hidden="true"
+                />
+                {/* Hairline accent on hover */}
+                <div
+                  className="absolute top-0 left-6 right-6 h-[3px] rounded-b-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ backgroundColor: stat.accent }}
+                  aria-hidden="true"
+                />
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <stat.icon className="h-4 w-4" style={{ color: stat.accent, opacity: 0.6 }} />
+                    <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                      {stat.label}
+                    </p>
+                  </div>
+                  <p className="text-4xl md:text-5xl font-extrabold tabular-nums leading-none" style={{ color: stat.accent }}>
+                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════ FEATURES ══════════════════════ */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">{t("features.title")}</h2>
-          <p className="text-muted-foreground max-w-xl">{t("features.subtitle")}</p>
+      {/* ══════════════════════ FEATURES (BENTO) ══════════════════════ */}
+      <section className="container mx-auto px-4 py-20 md:py-24">
+        <div className="mb-12 md:mb-16 max-w-2xl">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
+            {t("features.title")}
+          </h2>
+          <p className="text-lg text-slate-600 leading-relaxed">
+            {t("features.subtitle")}
+          </p>
         </div>
 
-        {/* Asymmetric layout: large card left + 2 stacked right */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Large feature */}
-          <Link href="/designer">
+        {/* Bento grid: 4-col / 2-row. Asymmetric, varied visual treatments per cell */}
+        <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 md:gap-5 auto-rows-fr">
+
+          {/* Cell 1 — LARGE: Diseñador IA (col-span-2, row-span-2) */}
+          <Link href="/designer" className="md:col-span-2 md:row-span-2">
             <div
-              className="group relative rounded-2xl p-8 md:p-10 h-full min-h-[260px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className="group relative rounded-3xl p-8 md:p-10 h-full min-h-[320px] md:min-h-[480px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between"
               style={{ backgroundColor: BRAND.deep, color: "white" }}
             >
-              <svg className="absolute inset-0 w-full h-full opacity-[0.07]" xmlns="http://www.w3.org/2000/svg">
+              <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <pattern id="feat-dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                    <circle cx="14" cy="14" r="5" fill="white"/>
+                  <pattern id="feat-dots-1" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+                    <circle cx="16" cy="16" r="6" fill="white"/>
                   </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#feat-dots)"/>
+                <rect width="100%" height="100%" fill="url(#feat-dots-1)"/>
               </svg>
+
+              <div
+                className="absolute top-10 right-10 w-48 h-48 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-700"
+                style={{ backgroundColor: BRAND.sky }}
+                aria-hidden="true"
+              />
+
               <div className="relative z-10 flex flex-col h-full">
-                <Sparkles className="h-8 w-8 mb-6 opacity-90" />
-                <h3 className="text-xl font-bold mb-3">{t("features.custom.title")}</h3>
-                <p className="text-sm opacity-80 leading-relaxed flex-1">{t("features.custom.description")}</p>
-                <div className="mt-6 inline-flex items-center gap-1 text-sm font-semibold opacity-90 group-hover:gap-2 transition-all">
-                  {isEs ? "Diseñar ahora" : "Design now"} <ArrowRight className="h-4 w-4" />
+                <div className="flex items-center justify-between mb-8">
+                  <div
+                    className="h-12 w-12 rounded-2xl flex items-center justify-center backdrop-blur-md"
+                    style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+                  >
+                    <Sparkles className="h-6 w-6" />
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-widest opacity-70">
+                    {isEs ? "Con IA" : "AI-powered"}
+                  </span>
+                </div>
+
+                <div className="flex-1 flex flex-col justify-end">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 leading-tight">
+                    {t("features.custom.title")}
+                  </h3>
+                  <p className="text-base opacity-85 leading-relaxed max-w-md mb-6">
+                    {t("features.custom.description")}
+                  </p>
+                  <div
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm self-start transition-all group-hover:gap-3"
+                    style={{ backgroundColor: "white", color: BRAND.deep }}
+                  >
+                    {isEs ? "Diseñar ahora" : "Design now"}
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
                 </div>
               </div>
             </div>
           </Link>
 
-          {/* Two stacked features */}
-          <div className="flex flex-col gap-6">
-            <Link href="/products">
-              <div
-                className="group rounded-2xl p-6 md:p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md border"
-                style={{ borderColor: BRAND.tint, backgroundColor: "white" }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: BRAND.tint }}>
-                    <Package className="h-5 w-5" style={{ color: BRAND.deep }} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base mb-1">{t("features.materials.title")}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{t("features.materials.description")}</p>
-                    <div className="mt-3 inline-flex items-center gap-1 text-xs font-semibold group-hover:gap-2 transition-all" style={{ color: BRAND.blue }}>
-                      {isEs ? "Ver materiales" : "Browse materials"} <ArrowRight className="h-3 w-3" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
+          {/* Cell 2 — Materials (col-span-2, top row) */}
+          <Link href="/products" className="md:col-span-2">
+            <div
+              className="group relative rounded-3xl p-7 h-full min-h-[200px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border bg-white"
+              style={{ borderColor: BRAND.tint }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden="true" />
 
-            <Link href="/courses">
-              <div
-                className="group rounded-2xl p-6 md:p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md border"
-                style={{ borderColor: BRAND.tint, backgroundColor: "white" }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: BRAND.tint }}>
-                    <GraduationCap className="h-5 w-5" style={{ color: BRAND.deep }} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base mb-1">{t("features.courses.title")}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{t("features.courses.description")}</p>
-                    <div className="mt-3 inline-flex items-center gap-1 text-xs font-semibold group-hover:gap-2 transition-all" style={{ color: BRAND.blue }}>
-                      {isEs ? "Ver cursos" : "Browse courses"} <ArrowRight className="h-3 w-3" />
-                    </div>
+              <div className="relative flex items-start gap-5 h-full">
+                <div
+                  className="h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 group-hover:rotate-[6deg] transition-transform duration-500"
+                  style={{ backgroundColor: BRAND.tint }}
+                >
+                  <Package className="h-7 w-7" style={{ color: BRAND.deep }} />
+                </div>
+
+                <div className="flex-1 flex flex-col h-full">
+                  <h3 className="font-bold text-lg md:text-xl mb-2">{t("features.materials.title")}</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed mb-4 flex-1">
+                    {t("features.materials.description")}
+                  </p>
+                  <div className="inline-flex items-center gap-1 text-sm font-semibold group-hover:gap-2 transition-all self-start" style={{ color: BRAND.blue }}>
+                    {isEs ? "Ver materiales" : "Browse materials"} <ArrowRight className="h-4 w-4" />
                   </div>
                 </div>
               </div>
-            </Link>
-          </div>
+            </div>
+          </Link>
+
+          {/* Cell 3 — Cursos (col-span-1, bottom row) */}
+          <Link href="/courses" className="md:col-span-1">
+            <div
+              className="group relative rounded-3xl p-6 h-full min-h-[200px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col"
+              style={{ backgroundColor: BRAND.tint }}
+            >
+              <GraduationCap className="h-8 w-8 mb-4 group-hover:scale-110 transition-transform duration-500" style={{ color: BRAND.deep }} />
+              <h3 className="font-bold text-base mb-1" style={{ color: BRAND.deep }}>
+                {t("features.courses.title")}
+              </h3>
+              <p className="text-xs leading-relaxed flex-1 mb-3" style={{ color: BRAND.deep, opacity: 0.75 }}>
+                {t("features.courses.description")}
+              </p>
+              <div className="inline-flex items-center gap-1 text-xs font-bold group-hover:gap-2 transition-all" style={{ color: BRAND.blue }}>
+                {isEs ? "Ver cursos" : "View courses"} <ArrowRight className="h-3 w-3" />
+              </div>
+            </div>
+          </Link>
+
+          {/* Cell 4 — WhatsApp CTA (col-span-1, bottom row) */}
+          <a
+            href="https://wa.me/584120993377"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="md:col-span-1 group relative rounded-3xl p-6 min-h-[200px] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between text-white"
+            style={{ backgroundColor: BRAND.wa }}
+          >
+            <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-white/10 blur-2xl group-hover:bg-white/20 transition-colors duration-500" aria-hidden="true" />
+            <WhatsAppIcon className="h-8 w-8 relative" />
+            <div className="relative">
+              <p className="text-base font-bold leading-tight mb-1">
+                {isEs ? "¿Necesitas ayuda?" : "Need help?"}
+              </p>
+              <p className="text-xs opacity-90 leading-relaxed mb-3">
+                {isEs ? "Habla con un asesor por WhatsApp" : "Chat with an advisor on WhatsApp"}
+              </p>
+              <div className="inline-flex items-center gap-1 text-xs font-bold group-hover:gap-2 transition-all">
+                {isEs ? "Escribir" : "Chat now"} <ArrowRight className="h-3 w-3" />
+              </div>
+            </div>
+          </a>
         </div>
       </section>
 
