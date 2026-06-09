@@ -5,7 +5,6 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 import {
   Search,
-  SlidersHorizontal,
   ShoppingBag,
   Package,
   Palette,
@@ -123,6 +122,13 @@ function formatStock(stock: number | string, unit?: string): string {
   const formatted = n % 1 === 0 ? String(Math.round(n)) : n.toFixed(2).replace(/\.?0+$/, "");
   const unitLabel = unit ? ` ${UNIT_LABELS[unit] || unit}` : "";
   return `${formatted}${unitLabel}`;
+}
+
+/** Extracts the first numeric sequence from a yarn name (e.g. "Estambre 091" -> 91).
+    Returns Infinity if no number found, so unnumbered items sort to the end. */
+function extractColorNumber(name: string): number {
+  const m = name.match(/\b(\d{1,5})\b/);
+  return m ? parseInt(m[1], 10) : Infinity;
 }
 
 /* ─── Store hero with background photo ──────────────────────────────
@@ -253,7 +259,16 @@ export default function ProductsPage() {
   }, [search, category, sortBy, showRugs, showMaterials]);
 
   const filteredProducts = useMemo(() => {
-    let result = [...products];
+    const result = [...products];
+
+    // When the user is browsing yarn and hasn't picked an explicit sort
+    // (still on "newest"), default to color-number ascending so 026, 091, 113
+    // appear in numeric order. This is what people actually scan for.
+    if (category === "estambre" && sortBy === "newest") {
+      result.sort((a, b) => extractColorNumber(a.name) - extractColorNumber(b.name));
+      return result;
+    }
+
     switch (sortBy) {
       case "priceLow":
         result.sort((a, b) => (a.salePriceUsd || 0) - (b.salePriceUsd || 0));
@@ -266,7 +281,7 @@ export default function ProductsPage() {
         break;
     }
     return result;
-  }, [products, sortBy]);
+  }, [products, sortBy, category]);
 
   // Use real rugs from ERP, fall back to mock if empty
   const rugsSource = realRugs.length > 0 ? realRugs : MOCK_RUGS;
@@ -291,11 +306,13 @@ export default function ProductsPage() {
 
   const allItems = useMemo<UnifiedItem[]>(() => {
     const items: UnifiedItem[] = [];
-    if (showRugs) {
-      filteredRugs.forEach((r) => items.push({ type: "rug", data: r }));
-    }
+    // Show ERP materials FIRST so the inventory the user actually loaded is
+    // the primary content; rugs after (real or mock fallback).
     if (showMaterials) {
       filteredProducts.forEach((p) => items.push({ type: "product", data: p }));
+    }
+    if (showRugs) {
+      filteredRugs.forEach((r) => items.push({ type: "rug", data: r }));
     }
     return items;
   }, [showRugs, showMaterials, filteredRugs, filteredProducts]);
@@ -361,13 +378,14 @@ export default function ProductsPage() {
               />
             </div>
 
-            {/* Category checkboxes */}
+            {/* Category list */}
             <Card className="bg-card">
-              <CardContent className="p-4 space-y-4">
+              <CardContent className="p-4 space-y-3">
                 <h3 className="font-headline font-semibold text-sm text-foreground uppercase tracking-wide">
                   {isEs ? "Categorías" : "Categories"}
                 </h3>
 
+                {/* Top-level: Rugs */}
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <input
                     type="checkbox"
@@ -381,6 +399,7 @@ export default function ProductsPage() {
                   </span>
                 </label>
 
+                {/* Top-level: Materials */}
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <input
                     type="checkbox"
@@ -394,24 +413,35 @@ export default function ProductsPage() {
                   </span>
                 </label>
 
-                {/* Material subcategories */}
+                {/* Material subcategories — listed (not dropdown) */}
                 {showMaterials && (
-                  <div className="pl-7 space-y-2 border-l-2 border-border ml-2">
-                    <Select value={category} onValueChange={setCategory}>
-                      <SelectTrigger className="w-full text-xs h-8">
-                        <SlidersHorizontal className="h-3 w-3 mr-1" />
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SHOP_CATEGORIES.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat === "all"
-                              ? t("filters.all")
-                              : CATEGORY_MAP[cat]?.en || cat}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <div className="pl-7 ml-2 border-l-2 border-border space-y-1 pt-2">
+                    {SHOP_CATEGORIES.map((cat) => {
+                      const isActive = category === cat;
+                      const label = cat === "all"
+                        ? t("filters.all")
+                        : (isEs
+                            ? CATEGORY_MAP[cat]?.es
+                            : CATEGORY_MAP[cat]?.en) || cat;
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => setCategory(cat)}
+                          className={`
+                            w-full text-left text-xs px-2.5 py-1.5 rounded-md transition-colors
+                            flex items-center gap-2
+                            ${isActive
+                              ? "bg-primary/10 text-primary font-semibold"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                            }
+                          `}
+                        >
+                          <span className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-primary" : "bg-muted-foreground/30"}`} aria-hidden="true" />
+                          {label}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>

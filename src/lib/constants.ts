@@ -30,12 +30,13 @@ export const CATEGORY_MAP: Record<string, { en: string; es: string }> = {
   otro: { en: "Other", es: "Otros" },
 };
 
-// E-commerce product categories for filtering
+// E-commerce product categories for filtering — order = display order in sidebar
 export const SHOP_CATEGORIES = [
   "all",
   "estambre",
   "pistola",
   "tijeras",
+  "tela",
   "backing",
   "otro",
 ] as const;
