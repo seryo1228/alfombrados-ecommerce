@@ -266,10 +266,18 @@ function VideoPlayer({
   );
 }
 
+/* ─── Workshop hero image fallback ──────────────────────────────────
+   Optional. Drop a photo at  public/workshop-hero.jpg  (or .png) and
+   it will load automatically as the background when no videos are
+   configured. If the file doesn't exist, the dotted blue pattern is
+   shown instead. */
+const WORKSHOP_HERO_IMAGE = "/workshop-hero.jpg";
+
 function WorkshopVideos({ isEs }: { isEs: boolean }) {
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(true);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hasVideos = WORKSHOP_VIDEOS.length > 0;
   const current = hasVideos ? WORKSHOP_VIDEOS[index] : null;
@@ -305,29 +313,49 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
         className="aspect-[4/3] rounded-2xl overflow-hidden relative flex items-end"
         style={{ backgroundColor: BRAND.deep }}
       >
-        <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="rug-about" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-              <circle cx="20" cy="20" r="8" fill="white"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#rug-about)"/>
-        </svg>
+        {/* Optional hero image — silently falls back to dotted pattern if file is missing */}
+        {heroImageLoaded && (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={WORKSHOP_HERO_IMAGE}
+            alt={isEs ? "Nuestro taller en San Antonio de los Altos" : "Our workshop in San Antonio de los Altos"}
+            onError={() => setHeroImageLoaded(false)}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+
+        {/* Dotted pattern — only when no hero image */}
+        {!heroImageLoaded && (
+          <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="rug-about" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                <circle cx="20" cy="20" r="8" fill="white"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#rug-about)"/>
+          </svg>
+        )}
+
+        {/* Dark gradient overlay so the Instagram CTA is readable on top of any photo */}
+        {heroImageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/60 pointer-events-none" aria-hidden="true" />
+        )}
+
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <a
             href="https://instagram.com/alfombra2_ve"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex flex-col items-center gap-3 text-white text-center px-6"
+            className="group inline-flex flex-col items-center gap-3 text-white text-center px-6 drop-shadow-md"
           >
-            <div className="h-16 w-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            <div className="h-16 w-16 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center group-hover:bg-white/25 transition-colors">
               <Instagram className="h-7 w-7" />
             </div>
             <div>
               <p className="font-semibold">
                 {isEs ? "Mira el taller en Instagram" : "See the workshop on Instagram"}
               </p>
-              <p className="text-sm opacity-75">@alfombra2_ve</p>
+              <p className="text-sm opacity-90">@alfombra2_ve</p>
             </div>
           </a>
         </div>
@@ -337,8 +365,8 @@ function WorkshopVideos({ isEs }: { isEs: boolean }) {
               <div key={i} className="flex-1" style={{ backgroundColor: c }} />
             ))}
           </div>
-          <div className="bg-black/30 backdrop-blur-sm px-5 py-4 text-white">
-            <p className="text-xs font-medium opacity-70 uppercase tracking-wider mb-0.5">
+          <div className="bg-black/40 backdrop-blur-sm px-5 py-4 text-white">
+            <p className="text-xs font-medium opacity-80 uppercase tracking-wider mb-0.5">
               {isEs ? "Nuestro Taller" : "Our Workshop"}
             </p>
             <p className="text-sm font-semibold">San Antonio de los Altos, Venezuela</p>
@@ -881,21 +909,6 @@ export default function HomePage() {
             {/* Left: workshop videos */}
             <div className="relative">
               <WorkshopVideos isEs={isEs} />
-
-              {/* Floating stat card */}
-              <div className="absolute -bottom-6 -right-4 md:-right-6 bg-white border rounded-xl p-4 shadow-lg max-w-[200px]">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="h-9 w-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${BRAND.tint}` }}>
-                    <Users className="h-4 w-4" style={{ color: BRAND.deep }} />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold leading-none" style={{ color: BRAND.blue }}>50+</p>
-                    <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
-                      {t("about.floatingCard")}
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Right: text */}
