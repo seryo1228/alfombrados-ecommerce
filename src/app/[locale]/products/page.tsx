@@ -125,6 +125,62 @@ function formatStock(stock: number | string, unit?: string): string {
   return `${formatted}${unitLabel}`;
 }
 
+/* ─── Store hero with background photo ──────────────────────────────
+   Drop your photo at  public/store-hero.jpg
+   (or rename existing). The component auto-loads it. If the file
+   is missing, falls back to a soft blue gradient — silent onError. */
+const STORE_HERO_IMAGE = "/store-hero.jpg";
+
+function StoreHero({ isEs }: { isEs: boolean }) {
+  const [imageLoaded, setImageLoaded] = useState(true);
+
+  return (
+    <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      {/* Photo layer — silently hidden if file missing */}
+      {imageLoaded && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={STORE_HERO_IMAGE}
+          alt=""
+          aria-hidden="true"
+          onError={() => setImageLoaded(false)}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+
+      {/* Readability overlay: subtle on edges, fading darker in the center
+          band so the headline always has contrast on any photo */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: imageLoaded
+            ? "radial-gradient(ellipse 60% 80% at center, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.05) 100%)"
+            : "transparent",
+        }}
+        aria-hidden="true"
+      />
+
+      <div className="relative container mx-auto px-4 py-20 md:py-28 text-center">
+        <Badge
+          variant="secondary"
+          className="mb-6 px-4 py-1.5 text-sm font-semibold bg-white/85 backdrop-blur-sm text-[#2354a2] border-[#1779c2]/30 shadow-sm"
+        >
+          <Heart className="h-4 w-4 mr-2 fill-[#1779c2] text-[#1779c2]" />
+          {isEs ? "IMPACTO SOCIAL DIRECTO" : "DIRECT SOCIAL IMPACT"}
+        </Badge>
+        <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight text-slate-900 drop-shadow-sm">
+          {isEs ? "Equípate para Crear." : "Gear Up to Create."}
+        </h1>
+        <p className="text-lg md:text-xl text-slate-700 max-w-2xl mx-auto font-medium drop-shadow-sm">
+          {isEs
+            ? "Cada compra apoya directamente a artesanos locales y fortalece comunidades creativas en Venezuela."
+            : "Every purchase directly supports local artisans and strengthens creative communities in Venezuela."}
+        </p>
+      </div>
+    </section>
+  );
+}
+
 /* ══════════════════════════════════════════════════════════════════ */
 
 export default function ProductsPage() {
@@ -285,25 +341,9 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* ═══════════════════ HERO HEADER ═══════════════════ */}
-      <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 border-b border-border">
-        <div className="container mx-auto px-4 py-16 text-center">
-          <Badge
-            variant="secondary"
-            className="mb-6 px-4 py-1.5 text-sm font-medium bg-primary/10 text-primary border-primary/20"
-          >
-            <Heart className="h-4 w-4 mr-2 fill-primary" />
-            IMPACTO SOCIAL DIRECTO
-          </Badge>
-          <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight">
-            {isEs ? "Equípate para Crear." : "Gear Up to Create."}
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            {isEs
-              ? "Cada compra apoya directamente a artesanos locales y fortalece comunidades creativas en Venezuela."
-              : "Every purchase directly supports local artisans and strengthens creative communities in Venezuela."}
-          </p>
-        </div>
-      </section>
+      {/* Background photo loaded from /public/store-hero.jpg. Silent fallback
+          to a soft blue gradient if the file is missing. */}
+      <StoreHero isEs={isEs} />
 
       {/* ═══════════════════ MAIN CONTENT: SIDEBAR + GRID ═══════════════════ */}
       <div className="container mx-auto px-4 py-8">
